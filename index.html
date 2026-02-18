@@ -183,6 +183,58 @@
   }
   input[type="number"]:focus { outline: none; border-color: var(--accent); }
 
+  .slider-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 140px;
+  }
+  .slider-wrap input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    outline: none;
+    cursor: pointer;
+  }
+  .slider-wrap input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .slider-wrap input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.15);
+  }
+  .slider-wrap input[type="range"]::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    cursor: pointer;
+  }
+  .slider-val {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text);
+  }
+  .slider-val.empty { color: var(--text-muted); font-weight: 400; }
+  .slider-wrap input[type="range"].unset {
+    opacity: 0.35;
+  }
+
   .row-num {
     color: var(--text-muted);
     font-size: 12px;
@@ -383,6 +435,21 @@
       padding: 10px 12px;
       text-align: left;
     }
+    .m-card .slider-wrap {
+      gap: 12px;
+    }
+    .m-card .slider-wrap input[type="range"] {
+      height: 8px;
+    }
+    .m-card .slider-wrap input[type="range"]::-webkit-slider-thumb {
+      width: 26px;
+      height: 26px;
+    }
+    .m-card .slider-wrap input[type="range"]::-moz-range-thumb {
+      width: 26px;
+      height: 26px;
+    }
+    .m-card .slider-val { font-size: 16px; min-width: 28px; }
     .m-card-row {
       display: flex;
       gap: 10px;
@@ -608,7 +675,7 @@
             <th style="width:40px">#</th>
             <th style="width:25%">Asset Name</th>
             <th style="width:100px">Priority Score</th>
-            <th>Notes (1–10)</th>
+            <th style="min-width:180px">Notes (1–10)</th>
           </tr>
         </thead>
         <tbody id="table-threat"></tbody>
@@ -636,7 +703,7 @@
             <th style="width:40px">#</th>
             <th style="width:25%">Asset Name</th>
             <th style="width:100px">Priority</th>
-            <th style="width:140px">Ease of Fixing (1–10)</th>
+            <th style="min-width:200px">Ease of Fixing (1–10)</th>
           </tr>
         </thead>
         <tbody id="table-e"></tbody>
@@ -665,7 +732,7 @@
             <th style="width:22%">Asset Name</th>
             <th style="width:80px">Priority</th>
             <th style="width:60px">Fix</th>
-            <th style="width:160px">Ease of Replacing (1–10)</th>
+            <th style="min-width:200px">Ease of Replacing (1–10)</th>
           </tr>
         </thead>
         <tbody id="table-f"></tbody>
@@ -695,7 +762,7 @@
             <th style="width:80px">Priority</th>
             <th style="width:50px">Fix</th>
             <th style="width:70px">Replace</th>
-            <th style="width:160px">Ease of Removing (1–10)</th>
+            <th style="min-width:200px">Ease of Removing (1–10)</th>
           </tr>
         </thead>
         <tbody id="table-g"></tbody>
@@ -833,6 +900,31 @@ function bindSelects(container, handler) {
 }
 function bindNumbers(container, handler) {
   container.querySelectorAll('input[type="number"]').forEach(inp => inp.addEventListener('input', handler));
+}
+
+function sliderHtml(value, dataAttr) {
+  const hasVal = value !== '' && value !== undefined && value !== null;
+  const num = hasVal ? +value : 5;
+  const cls = hasVal ? '' : ' unset';
+  const valCls = hasVal ? '' : ' empty';
+  const display = hasVal ? num : '\u2014';
+  return `<div class="slider-wrap">
+    <input type="range" min="1" max="10" value="${num}" ${dataAttr} class="${cls}">
+    <span class="slider-val${valCls}">${display}</span>
+  </div>`;
+}
+
+function bindSliders(container, handler) {
+  container.querySelectorAll('.slider-wrap').forEach(wrap => {
+    const range = wrap.querySelector('input[type="range"]');
+    const valSpan = wrap.querySelector('.slider-val');
+    range.addEventListener('input', e => {
+      range.classList.remove('unset');
+      valSpan.classList.remove('empty');
+      valSpan.textContent = e.target.value;
+      handler(e);
+    });
+  });
 }
 
 // ========== RENDER: STEP A ==========
@@ -1040,7 +1132,7 @@ function renderThreatResults() {
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td><input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1\u201310"></td>
+      <td>${sliderHtml(n, `data-i="${a.idx}"`)}</td>
     </tr>`;
   }).join('');
 
@@ -1056,20 +1148,18 @@ function renderThreatResults() {
         </div>
         <div class="m-card-field">
           <div class="m-card-label">Notes (1\u201310)</div>
-          <input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1\u201310">
+          ${sliderHtml(n, `data-i="${a.idx}"`)}
         </div>
       </div>
     </div>`;
   }).join('');
 
   const handler = e => {
-    const val = e.target.value;
-    if (val && (+val < 1 || +val > 10)) return;
-    state.threatNotes[e.target.dataset.i] = val;
+    state.threatNotes[e.target.dataset.i] = e.target.value;
     saveState();
   };
-  bindNumbers(tbody, handler);
-  bindNumbers(mob, handler);
+  bindSliders(tbody, handler);
+  bindSliders(mob, handler);
 }
 
 // ========== RENDER: STEP E ==========
@@ -1090,7 +1180,7 @@ function renderTableE() {
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td><input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1\u201310"></td>
+      <td>${sliderHtml(fix, `data-i="${a.idx}"`)}</td>
     </tr>`;
   }).join('');
 
@@ -1105,20 +1195,18 @@ function renderTableE() {
         </div>
         <div class="m-card-field">
           <div class="m-card-label">Ease of Fixing (1\u201310)</div>
-          <input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1\u201310">
+          ${sliderHtml(fix, `data-i="${a.idx}"`)}
         </div>
       </div>
     </div>`;
   }).join('');
 
   const handler = e => {
-    const val = e.target.value;
-    if (val && (+val < 1 || +val > 10)) return;
-    state.fixScores[e.target.dataset.i] = val;
+    state.fixScores[e.target.dataset.i] = e.target.value;
     saveState();
   };
-  bindNumbers(tbody, handler);
-  bindNumbers(mob, handler);
+  bindSliders(tbody, handler);
+  bindSliders(mob, handler);
 }
 
 // ========== RENDER: STEP F ==========
@@ -1140,7 +1228,7 @@ function renderTableF() {
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
       <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
-      <td><input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1\u201310"></td>
+      <td>${sliderHtml(rep, `data-i="${a.idx}"`)}</td>
     </tr>`;
   }).join('');
 
@@ -1160,19 +1248,17 @@ function renderTableF() {
       </div>
       <div class="m-card-field">
         <div class="m-card-label">Ease of Replacing (1\u201310)</div>
-        <input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1\u201310">
+        ${sliderHtml(rep, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
   const handler = e => {
-    const val = e.target.value;
-    if (val && (+val < 1 || +val > 10)) return;
-    state.replaceScores[e.target.dataset.i] = val;
+    state.replaceScores[e.target.dataset.i] = e.target.value;
     saveState();
   };
-  bindNumbers(tbody, handler);
-  bindNumbers(mob, handler);
+  bindSliders(tbody, handler);
+  bindSliders(mob, handler);
 }
 
 // ========== RENDER: STEP G ==========
@@ -1195,7 +1281,7 @@ function renderTableG() {
       <td class="score-cell">${priorityBadge(p)}</td>
       <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
       <td class="auto-cell ${rep?'':'empty'}">${rep||'\u2014'}</td>
-      <td><input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1\u201310"></td>
+      <td>${sliderHtml(rem, `data-i="${a.idx}"`)}</td>
     </tr>`;
   }).join('');
 
@@ -1219,19 +1305,17 @@ function renderTableG() {
       </div>
       <div class="m-card-field">
         <div class="m-card-label">Ease of Removing (1\u201310)</div>
-        <input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1\u201310">
+        ${sliderHtml(rem, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
   const handler = e => {
-    const val = e.target.value;
-    if (val && (+val < 1 || +val > 10)) return;
-    state.removeScores[e.target.dataset.i] = val;
+    state.removeScores[e.target.dataset.i] = e.target.value;
     saveState();
   };
-  bindNumbers(tbody, handler);
-  bindNumbers(mob, handler);
+  bindSliders(tbody, handler);
+  bindSliders(mob, handler);
 }
 
 // ========== RENDER: MITIGATION RESULTS ==========
