@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threat Risk Assessment Tool</title>
+<style>
+  :root {
+    --bg: #f5f7fa;
+    --surface: #ffffff;
+    --primary: #1a1a2e;
+    --accent: #0f3460;
+    --accent-light: #16213e;
+    --info: #d6eaf8;
+    --info-border: #85c1e9;
+    --text: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border: #dcdfe6;
+    --header-bg: #1a1a2e;
+    --header-text: #ffffff;
+    --row-alt: #f8f9fc;
+    --row-hover: #eef2f7;
+    --danger: #e74c3c;
+    --success: #27ae60;
+    --warning: #f39c12;
+    --tab-active: #0f3460;
+    --tab-inactive: #bdc3c7;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .app-header {
+    background: var(--primary);
+    color: var(--header-text);
+    padding: 28px 32px;
+    text-align: center;
+  }
+  .app-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .app-header p {
+    font-size: 14px;
+    opacity: 0.75;
+  }
+
+  .tab-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    background: var(--accent-light);
+    padding: 6px 16px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .tab-btn {
+    padding: 10px 18px;
+    border: none;
+    background: transparent;
+    color: rgba(255,255,255,0.55);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn:hover { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.08); }
+  .tab-btn.active {
+    background: var(--bg);
+    color: var(--accent);
+  }
+  .tab-btn.result-tab { color: rgba(255,200,100,0.7); }
+  .tab-btn.result-tab.active { color: var(--warning); background: var(--bg); }
+
+  .tab-panel { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
+  .tab-panel.active { display: block; }
+
+  .exercise-card {
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  .exercise-title {
+    background: var(--accent);
+    color: white;
+    padding: 16px 24px;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  .exercise-instructions {
+    background: var(--info);
+    border-left: 4px solid var(--info-border);
+    padding: 16px 24px;
+    font-size: 14px;
+    line-height: 1.65;
+    color: #2c3e50;
+  }
+
+  .table-wrap { overflow-x: auto; padding: 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  thead th {
+    background: var(--header-bg);
+    color: var(--header-text);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+  tbody tr { border-bottom: 1px solid var(--border); }
+  tbody tr:nth-child(even) { background: var(--row-alt); }
+  tbody tr:hover { background: var(--row-hover); }
+  td { padding: 4px 8px; vertical-align: top; }
+
+  input[type="text"], textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    background: transparent;
+  }
+  input[type="text"]:focus, textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(15,52,96,0.12);
+  }
+  textarea { resize: vertical; min-height: 36px; }
+
+  select {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    background: white;
+    cursor: pointer;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+
+  input[type="number"] {
+    width: 80px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    font-family: inherit;
+    text-align: center;
+  }
+  input[type="number"]:focus { outline: none; border-color: var(--accent); }
+
+  .row-num {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-align: center;
+    min-width: 30px;
+  }
+
+  .auto-cell {
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text);
+    min-height: 36px;
+  }
+  .auto-cell.empty { color: var(--text-muted); font-style: italic; }
+
+  .priority-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    min-width: 28px;
+  }
+  .priority-high { background: #fce4e4; color: #c0392b; }
+  .priority-med { background: #fef5e7; color: #e67e22; }
+  .priority-low { background: #e8f8f5; color: #1abc9c; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  .nav-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .nav-btn.prev { background: var(--border); color: var(--text); }
+  .nav-btn.prev:hover { background: #c5cad0; }
+  .nav-btn.next { background: var(--accent); color: white; }
+  .nav-btn.next:hover { background: #0d2b4f; }
+
+  .score-cell { font-weight: 700; font-size: 14px; }
+
+  .add-row-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    margin: 12px 16px;
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    background: transparent;
+    color: var(--text-muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .add-row-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .intro-content {
+    padding: 32px;
+    line-height: 1.8;
+    font-size: 15px;
+  }
+  .intro-content h2 { margin: 20px 0 10px; color: var(--accent); font-size: 18px; }
+  .intro-content ol { padding-left: 24px; }
+  .intro-content li { margin: 6px 0; }
+  .intro-content .start-btn {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 14px 36px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .intro-content .start-btn:hover { background: #0d2b4f; }
+
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .toolbar button {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: white;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
+
+  .results-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 20px 0;
+  }
+  .summary-card {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .summary-card .num { font-size: 32px; font-weight: 800; color: var(--accent); }
+  .summary-card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  @media (max-width: 768px) {
+    .tab-btn { padding: 8px 12px; font-size: 12px; }
+    .tab-panel { padding: 12px; }
+    thead th, td { padding: 6px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>Threat Risk Assessment Tool</h1>
+  <p>Individual Digital Asset Threat Modeling Worksheet</p>
+</div>
+
+<div class="tab-bar" id="tabBar">
+  <button class="tab-btn active" data-tab="intro">Overview</button>
+  <button class="tab-btn" data-tab="step-a">A: Assets</button>
+  <button class="tab-btn" data-tab="step-b">B: Threat Actors</button>
+  <button class="tab-btn" data-tab="step-c">C: Risk Rating</button>
+  <button class="tab-btn" data-tab="step-d">D: Vulnerability</button>
+  <button class="tab-btn result-tab" data-tab="threat-results">Threat Results</button>
+  <button class="tab-btn" data-tab="step-e">E: Fix Ease</button>
+  <button class="tab-btn" data-tab="step-f">F: Replace Ease</button>
+  <button class="tab-btn" data-tab="step-g">G: Remove Ease</button>
+  <button class="tab-btn result-tab" data-tab="mitigation-results">Mitigation Results</button>
+</div>
+
+<!-- INTRODUCTION -->
+<div class="tab-panel active" id="panel-intro">
+  <div class="exercise-card">
+    <div class="exercise-title">Getting Started</div>
+    <div class="intro-content">
+      <p>This interactive tool guides you through a structured threat modeling process for your digital assets. By completing each step, you'll identify, prioritize, and plan mitigations for risks to your digital life.</p>
+
+      <h2>How It Works</h2>
+      <ol>
+        <li><strong>Step A — Identify Assets:</strong> List all digital assets you want to protect (accounts, devices, data, etc.).</li>
+        <li><strong>Step B — Identify Threat Actors:</strong> Think about who might want to compromise your assets and why.</li>
+        <li><strong>Step C — Rate Risk:</strong> For each asset, rate how damaging it would be if compromised.</li>
+        <li><strong>Step D — Rate Vulnerability:</strong> For each asset, rate how exposed or vulnerable it currently is.</li>
+        <li><strong>Threat Results:</strong> An auto-calculated priority score combining risk and vulnerability.</li>
+        <li><strong>Step E — Ease of Fixing:</strong> Rate how easy it is to fix/harden each asset (1 = very hard, 10 = very easy).</li>
+        <li><strong>Step F — Ease of Replacing:</strong> Rate how easy it is to replace each asset if compromised.</li>
+        <li><strong>Step G — Ease of Removing:</strong> Rate how easy it is to remove an unnecessary asset entirely.</li>
+        <li><strong>Mitigation Results:</strong> A final summary combining all scores to help you decide the best strategy — fix, replace, or remove.</li>
+      </ol>
+
+      <p>Data is saved automatically in your browser. Nothing is sent to any server.</p>
+
+      <button class="start-btn" onclick="switchTab('step-a')">Begin Assessment &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP A: ASSETS -->
+<div class="tab-panel" id="panel-step-a">
+  <div class="exercise-card">
+    <div class="exercise-title">Step A: Identify Your Digital Assets</div>
+    <div class="exercise-instructions">
+      List every digital asset you want to protect. Think broadly: email accounts, social media profiles, cloud storage, devices, financial accounts, medical portals, messaging apps, password managers, cryptocurrency wallets, domain names, and more. Add a brief description of each.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:35%">Asset Name</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody id="table-a"></tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addAssetRow()">+ Add Asset</button>
+    <div class="nav-row" style="padding:0 16px 16px">
+      <span></span>
+      <button class="nav-btn next" onclick="switchTab('step-b')">Next: Threat Actors &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP B: THREAT ACTORS -->
+<div class="tab-panel" id="panel-step-b">
+  <div class="exercise-card">
+    <div class="exercise-title">Step B: Identify Threat Actors</div>
+    <div class="exercise-instructions">
+      Who might want to compromise your digital assets? Consider: hackers, scammers, stalkers, corporate espionage, nation-states, disgruntled employees, abusive partners, data brokers, or even accidental exposure. Describe their likely motivation and capabilities.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:35%">Threat Actor</th>
+            <th>Description / Motivation</th>
+          </tr>
+        </thead>
+        <tbody id="table-b"></tbody>
+      </table>
+    </div>
+    <button class="add-row-btn" onclick="addThreatRow()">+ Add Threat Actor</button>
+    <div class="nav-row" style="padding:0 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-a')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('step-c')">Next: Risk Rating &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP C: RISK RATING -->
+<div class="tab-panel" id="panel-step-c">
+  <div class="exercise-card">
+    <div class="exercise-title">Step C: Rate the Risk of Each Asset</div>
+    <div class="exercise-instructions">
+      For each asset you listed in Step A, rate how risky it would be if that asset were compromised or lost. Consider the impact on your privacy, finances, safety, and reputation. Add notes explaining your reasoning.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:25%">Asset Name</th>
+            <th style="width:180px">Risk Rating</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="table-c"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-b')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('step-d')">Next: Vulnerability &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP D: VULNERABILITY -->
+<div class="tab-panel" id="panel-step-d">
+  <div class="exercise-card">
+    <div class="exercise-title">Step D: Rate the Vulnerability of Each Asset</div>
+    <div class="exercise-instructions">
+      For each asset, rate how vulnerable or exposed it currently is to attack. Consider: Is the password strong and unique? Is two-factor authentication enabled? Is the software up to date? Is data encrypted? Could someone access it easily?
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:25%">Asset Name</th>
+            <th style="width:200px">Vulnerability Rating</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody id="table-d"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-c')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('threat-results')">Next: Threat Results &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- THREAT RESULTS -->
+<div class="tab-panel" id="panel-threat-results">
+  <div class="exercise-card">
+    <div class="exercise-title">Threat Assessment Results</div>
+    <div class="exercise-instructions">
+      This page auto-calculates a priority score for each asset based on your risk and vulnerability ratings from Steps C and D. Higher scores indicate assets that need the most urgent attention. Use the Notes column (1–10 scale) to add your own priority override if desired.
+    </div>
+    <div id="threat-summary" class="results-summary" style="padding:20px 16px 0"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:25%">Asset Name</th>
+            <th style="width:100px">Priority Score</th>
+            <th>Notes (1–10)</th>
+          </tr>
+        </thead>
+        <tbody id="table-threat"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-d')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('step-e')">Next: Fix Ease &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP E: FIX EASE -->
+<div class="tab-panel" id="panel-step-e">
+  <div class="exercise-card">
+    <div class="exercise-title">Step E: Rate Ease of Fixing</div>
+    <div class="exercise-instructions">
+      For each asset, rate how easy it would be to fix or harden it against threats. Fixing means improving security without replacing the asset: enabling two-factor auth, changing passwords, encrypting data, updating software, adjusting privacy settings, reducing stored sensitive data, etc. Rate on a 1–10 scale where 10 = very easy to fix and 1 = very difficult.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:25%">Asset Name</th>
+            <th style="width:100px">Priority</th>
+            <th style="width:140px">Ease of Fixing (1–10)</th>
+          </tr>
+        </thead>
+        <tbody id="table-e"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('threat-results')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('step-f')">Next: Replace Ease &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP F: REPLACE EASE -->
+<div class="tab-panel" id="panel-step-f">
+  <div class="exercise-card">
+    <div class="exercise-title">Step F: Rate Ease of Replacing</div>
+    <div class="exercise-instructions">
+      For each asset, rate how easy it would be to replace it entirely with a more secure alternative. For example: switching email providers, moving to encrypted messaging, using a different cloud service, or getting a new device. Rate 1–10 where 10 = very easy to replace, 1 = very difficult.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:22%">Asset Name</th>
+            <th style="width:80px">Priority</th>
+            <th style="width:60px">Fix</th>
+            <th style="width:160px">Ease of Replacing (1–10)</th>
+          </tr>
+        </thead>
+        <tbody id="table-f"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-e')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('step-g')">Next: Remove Ease &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- STEP G: REMOVE EASE -->
+<div class="tab-panel" id="panel-step-g">
+  <div class="exercise-card">
+    <div class="exercise-title">Step G: Rate Ease of Removing</div>
+    <div class="exercise-instructions">
+      For each asset, rate how easy it would be to remove or decommission it entirely. Sometimes the best mitigation is to eliminate unnecessary digital assets altogether — delete unused accounts, remove apps you don't need, stop using insecure services. Rate 1–10 where 10 = very easy to remove, 1 = very difficult or impossible.
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:20%">Asset Name</th>
+            <th style="width:80px">Priority</th>
+            <th style="width:50px">Fix</th>
+            <th style="width:70px">Replace</th>
+            <th style="width:160px">Ease of Removing (1–10)</th>
+          </tr>
+        </thead>
+        <tbody id="table-g"></tbody>
+      </table>
+    </div>
+    <div class="nav-row" style="padding:12px 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-f')">&larr; Previous</button>
+      <button class="nav-btn next" onclick="switchTab('mitigation-results')">View Mitigation Results &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- MITIGATION RESULTS -->
+<div class="tab-panel" id="panel-mitigation-results">
+  <div class="exercise-card">
+    <div class="exercise-title">Mitigation Strategy Results</div>
+    <div class="exercise-instructions">
+      This final view brings together all your assessments. For each asset, compare the ease of fixing, replacing, and removing. The recommended strategy is usually the option with the highest ease score — the least disruptive path to reducing risk. Use the Notes column to record your chosen action plan.
+    </div>
+    <div id="mitigation-summary" class="results-summary" style="padding:20px 16px 0"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40px">#</th>
+            <th style="width:18%">Asset Name</th>
+            <th style="width:80px">Priority</th>
+            <th style="width:50px">Fix</th>
+            <th style="width:70px">Replace</th>
+            <th style="width:70px">Remove</th>
+            <th>Notes / Action Plan</th>
+          </tr>
+        </thead>
+        <tbody id="table-mitigation"></tbody>
+      </table>
+    </div>
+    <div class="toolbar" style="border-top:1px solid var(--border); border-bottom:none; justify-content:center; padding:16px;">
+      <button onclick="exportCSV()" style="padding:10px 24px; font-size:14px;">Export as CSV</button>
+      <button onclick="printResults()" style="padding:10px 24px; font-size:14px;">Print Results</button>
+      <button onclick="clearAll()" style="padding:10px 24px; font-size:14px; color:var(--danger);">Reset All Data</button>
+    </div>
+    <div class="nav-row" style="padding:0 16px 16px">
+      <button class="nav-btn prev" onclick="switchTab('step-g')">&larr; Previous</button>
+      <span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== STATE ==========
+const STORAGE_KEY = 'threat_risk_tool_data';
+const DEFAULT_ROW_COUNT = 15;
+
+let state = loadState();
+
+function defaultState() {
+  return {
+    assets: Array.from({length: DEFAULT_ROW_COUNT}, () => ({name: '', desc: ''})),
+    threats: Array.from({length: 8}, () => ({name: '', desc: ''})),
+    riskRatings: {},    // index -> {rating, notes}
+    vulnRatings: {},    // index -> {rating, notes}
+    threatNotes: {},    // index -> notes (1-10)
+    fixScores: {},      // index -> number
+    replaceScores: {},  // index -> number
+    removeScores: {},   // index -> number
+    mitigationNotes: {} // index -> string
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const s = JSON.parse(raw);
+      // ensure all keys exist
+      return Object.assign(defaultState(), s);
+    }
+  } catch(e) {}
+  return defaultState();
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+// ========== TABS ==========
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+  document.getElementById(`panel-${id}`).classList.add('active');
+  renderAll();
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// ========== SCORING ==========
+function riskScore(rating) {
+  if (rating === 'Very Risky') return 3;
+  if (rating === 'Risky') return 2;
+  if (rating === 'Moderately Risky') return 1;
+  return 0;
+}
+
+function vulnScore(rating) {
+  if (rating === 'Very Vulnerable') return 3;
+  if (rating === 'Vulnerable') return 2;
+  if (rating === 'Moderately Vulnerable') return 2;
+  return 0;
+}
+
+function calcPriority(i) {
+  const r = state.riskRatings[i]?.rating || '';
+  const v = state.vulnRatings[i]?.rating || '';
+  const total = riskScore(r) + vulnScore(v);
+  return total > 0 ? total : null;
+}
+
+function priorityBadge(score) {
+  if (score === null || score === undefined) return '<span class="auto-cell empty">—</span>';
+  let cls = 'priority-low';
+  if (score >= 5) cls = 'priority-high';
+  else if (score >= 3) cls = 'priority-med';
+  return `<span class="priority-badge ${cls}">${score}</span>`;
+}
+
+// ========== RENDER FUNCTIONS ==========
+function getFilledAssets() {
+  return state.assets
+    .map((a, i) => ({...a, idx: i}))
+    .filter(a => a.name.trim() !== '');
+}
+
+function renderTableA() {
+  const tbody = document.getElementById('table-a');
+  tbody.innerHTML = state.assets.map((a, i) => `
+    <tr>
+      <td class="row-num">${i+1}</td>
+      <td><input type="text" value="${esc(a.name)}" data-i="${i}" data-field="name" placeholder="e.g., Gmail account"></td>
+      <td><input type="text" value="${esc(a.desc)}" data-i="${i}" data-field="desc" placeholder="Primary email for personal and work"></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i;
+      state.assets[i][e.target.dataset.field] = e.target.value;
+      saveState();
+    });
+  });
+}
+
+function renderTableB() {
+  const tbody = document.getElementById('table-b');
+  tbody.innerHTML = state.threats.map((t, i) => `
+    <tr>
+      <td class="row-num">${i+1}</td>
+      <td><input type="text" value="${esc(t.name)}" data-i="${i}" data-field="name" placeholder="e.g., Phishing scammer"></td>
+      <td><input type="text" value="${esc(t.desc)}" data-i="${i}" data-field="desc" placeholder="Sends fake login pages via email"></td>
+    </tr>
+  `).join('');
+  tbody.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = +e.target.dataset.i;
+      state.threats[i][e.target.dataset.field] = e.target.value;
+      saveState();
+    });
+  });
+}
+
+function renderTableC() {
+  const tbody = document.getElementById('table-c');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets listed yet. Go to Step A to add assets.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filled.map(a => {
+    const r = state.riskRatings[a.idx] || {};
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td>
+        <select data-i="${a.idx}">
+          <option value="">— Select —</option>
+          <option value="Very Risky" ${r.rating==='Very Risky'?'selected':''}>Very Risky</option>
+          <option value="Risky" ${r.rating==='Risky'?'selected':''}>Risky</option>
+          <option value="Moderately Risky" ${r.rating==='Moderately Risky'?'selected':''}>Moderately Risky</option>
+        </select>
+      </td>
+      <td><input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" placeholder="Why this rating?"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const i = e.target.dataset.i;
+      if (!state.riskRatings[i]) state.riskRatings[i] = {};
+      state.riskRatings[i].rating = e.target.value;
+      saveState();
+    });
+  });
+  tbody.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = e.target.dataset.i;
+      if (!state.riskRatings[i]) state.riskRatings[i] = {};
+      state.riskRatings[i].notes = e.target.value;
+      saveState();
+    });
+  });
+}
+
+function renderTableD() {
+  const tbody = document.getElementById('table-d');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets listed yet. Go to Step A to add assets.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filled.map(a => {
+    const v = state.vulnRatings[a.idx] || {};
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td>
+        <select data-i="${a.idx}">
+          <option value="">— Select —</option>
+          <option value="Very Vulnerable" ${v.rating==='Very Vulnerable'?'selected':''}>Very Vulnerable</option>
+          <option value="Vulnerable" ${v.rating==='Vulnerable'?'selected':''}>Vulnerable</option>
+          <option value="Moderately Vulnerable" ${v.rating==='Moderately Vulnerable'?'selected':''}>Moderately Vulnerable</option>
+        </select>
+      </td>
+      <td><input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" placeholder="What makes it vulnerable?"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('select').forEach(sel => {
+    sel.addEventListener('change', e => {
+      const i = e.target.dataset.i;
+      if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
+      state.vulnRatings[i].rating = e.target.value;
+      saveState();
+    });
+  });
+  tbody.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const i = e.target.dataset.i;
+      if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
+      state.vulnRatings[i].notes = e.target.value;
+      saveState();
+    });
+  });
+}
+
+function renderThreatResults() {
+  const tbody = document.getElementById('table-threat');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to score yet.</td></tr>';
+    document.getElementById('threat-summary').innerHTML = '';
+    return;
+  }
+  const scores = filled.map(a => ({...a, priority: calcPriority(a.idx)})).filter(a => a.priority !== null);
+
+  // Summary cards
+  const sumEl = document.getElementById('threat-summary');
+  const highCount = scores.filter(s => s.priority >= 5).length;
+  const medCount = scores.filter(s => s.priority >= 3 && s.priority < 5).length;
+  const lowCount = scores.filter(s => s.priority > 0 && s.priority < 3).length;
+  sumEl.innerHTML = `
+    <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Assets Tracked</div></div>
+    <div class="summary-card"><div class="num" style="color:var(--danger)">${highCount}</div><div class="label">High Priority</div></div>
+    <div class="summary-card"><div class="num" style="color:var(--warning)">${medCount}</div><div class="label">Medium Priority</div></div>
+    <div class="summary-card"><div class="num" style="color:var(--success)">${lowCount}</div><div class="label">Lower Priority</div></div>
+  `;
+
+  tbody.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const n = state.threatNotes[a.idx] || '';
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td class="score-cell">${priorityBadge(p)}</td>
+      <td><input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1–10"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const val = e.target.value;
+      if (val && (+val < 1 || +val > 10)) return;
+      state.threatNotes[e.target.dataset.i] = val;
+      saveState();
+    });
+  });
+}
+
+function renderTableE() {
+  const tbody = document.getElementById('table-e');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td class="score-cell">${priorityBadge(p)}</td>
+      <td><input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1–10"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const val = e.target.value;
+      if (val && (+val < 1 || +val > 10)) return;
+      state.fixScores[e.target.dataset.i] = val;
+      saveState();
+    });
+  });
+}
+
+function renderTableF() {
+  const tbody = document.getElementById('table-f');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td class="score-cell">${priorityBadge(p)}</td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
+      <td><input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1–10"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const val = e.target.value;
+      if (val && (+val < 1 || +val > 10)) return;
+      state.replaceScores[e.target.dataset.i] = val;
+      saveState();
+    });
+  });
+}
+
+function renderTableG() {
+  const tbody = document.getElementById('table-g');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    const rem = state.removeScores[a.idx] || '';
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td class="score-cell">${priorityBadge(p)}</td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
+      <td class="auto-cell ${rep?'':'empty'}">${rep||'—'}</td>
+      <td><input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1–10"></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      const val = e.target.value;
+      if (val && (+val < 1 || +val > 10)) return;
+      state.removeScores[e.target.dataset.i] = val;
+      saveState();
+    });
+  });
+}
+
+function renderMitigationResults() {
+  const tbody = document.getElementById('table-mitigation');
+  const filled = getFilledAssets();
+  if (filled.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to summarize.</td></tr>';
+    document.getElementById('mitigation-summary').innerHTML = '';
+    return;
+  }
+
+  let fixBest = 0, repBest = 0, remBest = 0;
+  filled.forEach(a => {
+    const fix = +(state.fixScores[a.idx]||0);
+    const rep = +(state.replaceScores[a.idx]||0);
+    const rem = +(state.removeScores[a.idx]||0);
+    const max = Math.max(fix, rep, rem);
+    if (max > 0) {
+      if (max === fix) fixBest++;
+      else if (max === rep) repBest++;
+      else remBest++;
+    }
+  });
+
+  const sumEl = document.getElementById('mitigation-summary');
+  sumEl.innerHTML = `
+    <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Total Assets</div></div>
+    <div class="summary-card"><div class="num" style="color:#2980b9">${fixBest}</div><div class="label">Best to Fix</div></div>
+    <div class="summary-card"><div class="num" style="color:#8e44ad">${repBest}</div><div class="label">Best to Replace</div></div>
+    <div class="summary-card"><div class="num" style="color:#e67e22">${remBest}</div><div class="label">Best to Remove</div></div>
+  `;
+
+  tbody.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    const rem = state.removeScores[a.idx] || '';
+    const notes = state.mitigationNotes[a.idx] || '';
+    return `
+    <tr>
+      <td class="row-num">${a.idx+1}</td>
+      <td class="auto-cell">${esc(a.name)}</td>
+      <td class="score-cell">${priorityBadge(p)}</td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
+      <td class="auto-cell ${rep?'':'empty'}">${rep||'—'}</td>
+      <td class="auto-cell ${rem?'':'empty'}">${rem||'—'}</td>
+      <td><input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="Your action plan..."></td>
+    </tr>`;
+  }).join('');
+  tbody.querySelectorAll('input[type="text"]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      state.mitigationNotes[e.target.dataset.i] = e.target.value;
+      saveState();
+    });
+  });
+}
+
+function renderAll() {
+  renderTableA();
+  renderTableB();
+  renderTableC();
+  renderTableD();
+  renderThreatResults();
+  renderTableE();
+  renderTableF();
+  renderTableG();
+  renderMitigationResults();
+}
+
+// ========== ADD ROWS ==========
+function addAssetRow() {
+  state.assets.push({name: '', desc: ''});
+  saveState();
+  renderTableA();
+  // focus the new row
+  const rows = document.querySelectorAll('#table-a input[data-field="name"]');
+  rows[rows.length-1]?.focus();
+}
+
+function addThreatRow() {
+  state.threats.push({name: '', desc: ''});
+  saveState();
+  renderTableB();
+  const rows = document.querySelectorAll('#table-b input[data-field="name"]');
+  rows[rows.length-1]?.focus();
+}
+
+// ========== EXPORT / UTILS ==========
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function exportCSV() {
+  const filled = getFilledAssets();
+  if (filled.length === 0) { alert('No data to export.'); return; }
+  let csv = 'Asset Name,Risk Rating,Vulnerability Rating,Priority Score,Ease of Fix,Ease of Replace,Ease of Remove,Action Plan\n';
+  filled.forEach(a => {
+    const r = state.riskRatings[a.idx]?.rating || '';
+    const v = state.vulnRatings[a.idx]?.rating || '';
+    const p = calcPriority(a.idx) ?? '';
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    const rem = state.removeScores[a.idx] || '';
+    const notes = (state.mitigationNotes[a.idx] || '').replace(/"/g, '""');
+    csv += `"${a.name.replace(/"/g,'""')}","${r}","${v}","${p}","${fix}","${rep}","${rem}","${notes}"\n`;
+  });
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'threat_risk_assessment.csv';
+  a.click();
+}
+
+function printResults() {
+  switchTab('mitigation-results');
+  setTimeout(() => window.print(), 300);
+}
+
+function clearAll() {
+  if (!confirm('This will permanently delete all your data. Are you sure?')) return;
+  if (!confirm('Really clear everything? This cannot be undone.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  state = defaultState();
+  renderAll();
+}
+
+// ========== INIT ==========
+renderAll();
+</script>
+</body>
+</html>
