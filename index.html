@@ -296,10 +296,131 @@
   .summary-card .num { font-size: 32px; font-weight: 800; color: var(--accent); }
   .summary-card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
+  /* ===== MOBILE: card layout for data rows ===== */
+  .mobile-card { display: none; }
+
   @media (max-width: 768px) {
-    .tab-btn { padding: 8px 12px; font-size: 12px; }
-    .tab-panel { padding: 12px; }
-    thead th, td { padding: 6px 8px; }
+    .app-header { padding: 20px 16px; }
+    .app-header h1 { font-size: 20px; }
+    .app-header p { font-size: 12px; }
+
+    .tab-bar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 6px 8px 0;
+      gap: 1px;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      padding: 8px 12px;
+      font-size: 11px;
+      flex-shrink: 0;
+    }
+
+    .tab-panel { padding: 10px; }
+
+    .exercise-title { font-size: 16px; padding: 14px 16px; }
+    .exercise-instructions { padding: 12px 16px; font-size: 13px; }
+    .intro-content { padding: 20px 16px; font-size: 14px; }
+    .intro-content h2 { font-size: 16px; }
+
+    /* Hide desktop tables, show mobile cards */
+    .table-wrap { display: none; }
+    .mobile-card { display: block; }
+
+    .m-card {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 16px;
+    }
+    .m-card:nth-child(even) { background: var(--row-alt); }
+    .m-card-num {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .m-card-field {
+      margin-bottom: 10px;
+    }
+    .m-card-field:last-child { margin-bottom: 0; }
+    .m-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .m-card-value {
+      font-size: 14px;
+      color: var(--text);
+    }
+    .m-card input[type="text"],
+    .m-card textarea {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px 12px;
+    }
+    .m-card select {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px 12px;
+    }
+    .m-card input[type="number"] {
+      width: 100%;
+      font-size: 16px;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .m-card-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .m-card-row .m-card-field { flex: 1; min-width: 80px; }
+    .m-card .auto-cell {
+      padding: 0;
+      font-size: 14px;
+    }
+    .m-card .priority-badge { font-size: 13px; }
+
+    .m-empty {
+      padding: 24px 16px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .nav-row { padding: 0 16px 16px !important; gap: 10px; }
+    .nav-btn { padding: 12px 20px; font-size: 14px; flex-shrink: 0; }
+
+    .add-row-btn {
+      display: flex;
+      justify-content: center;
+      margin: 12px 16px;
+      padding: 12px;
+      font-size: 14px;
+    }
+
+    .results-summary {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 14px 16px 0 !important;
+    }
+    .summary-card { padding: 14px; }
+    .summary-card .num { font-size: 26px; }
+    .summary-card .label { font-size: 12px; }
+
+    .toolbar { justify-content: center; gap: 8px; }
+    .toolbar button { padding: 10px 16px !important; font-size: 13px !important; flex: 1; min-width: 0; }
+  }
+
+  @media (max-width: 380px) {
+    .tab-btn { padding: 7px 9px; font-size: 10px; }
+    .results-summary { grid-template-columns: 1fr 1fr; }
+    .app-header h1 { font-size: 17px; }
   }
 </style>
 </head>
@@ -369,6 +490,7 @@
         <tbody id="table-a"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-a"></div>
     <button class="add-row-btn" onclick="addAssetRow()">+ Add Asset</button>
     <div class="nav-row" style="padding:0 16px 16px">
       <span></span>
@@ -396,6 +518,7 @@
         <tbody id="table-b"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-b"></div>
     <button class="add-row-btn" onclick="addThreatRow()">+ Add Threat Actor</button>
     <div class="nav-row" style="padding:0 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-a')">&larr; Previous</button>
@@ -424,6 +547,7 @@
         <tbody id="table-c"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-c"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-b')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('step-d')">Next: Vulnerability &rarr;</button>
@@ -451,6 +575,7 @@
         <tbody id="table-d"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-d"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-c')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('threat-results')">Next: Threat Results &rarr;</button>
@@ -479,6 +604,7 @@
         <tbody id="table-threat"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-threat"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-d')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('step-e')">Next: Fix Ease &rarr;</button>
@@ -506,6 +632,7 @@
         <tbody id="table-e"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-e"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('threat-results')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('step-f')">Next: Replace Ease &rarr;</button>
@@ -534,6 +661,7 @@
         <tbody id="table-f"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-f"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-e')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('step-g')">Next: Remove Ease &rarr;</button>
@@ -563,6 +691,7 @@
         <tbody id="table-g"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-g"></div>
     <div class="nav-row" style="padding:12px 16px 16px">
       <button class="nav-btn prev" onclick="switchTab('step-f')">&larr; Previous</button>
       <button class="nav-btn next" onclick="switchTab('mitigation-results')">View Mitigation Results &rarr;</button>
@@ -594,6 +723,7 @@
         <tbody id="table-mitigation"></tbody>
       </table>
     </div>
+    <div class="mobile-card" id="mobile-mitigation"></div>
     <div class="toolbar" style="border-top:1px solid var(--border); border-bottom:none; justify-content:center; padding:16px;">
       <button onclick="exportCSV()" style="padding:10px 24px; font-size:14px;">Export as CSV</button>
       <button onclick="printResults()" style="padding:10px 24px; font-size:14px;">Print Results</button>
@@ -617,24 +747,20 @@ function defaultState() {
   return {
     assets: Array.from({length: DEFAULT_ROW_COUNT}, () => ({name: '', desc: ''})),
     threats: Array.from({length: 8}, () => ({name: '', desc: ''})),
-    riskRatings: {},    // index -> {rating, notes}
-    vulnRatings: {},    // index -> {rating, notes}
-    threatNotes: {},    // index -> notes (1-10)
-    fixScores: {},      // index -> number
-    replaceScores: {},  // index -> number
-    removeScores: {},   // index -> number
-    mitigationNotes: {} // index -> string
+    riskRatings: {},
+    vulnRatings: {},
+    threatNotes: {},
+    fixScores: {},
+    replaceScores: {},
+    removeScores: {},
+    mitigationNotes: {}
   };
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const s = JSON.parse(raw);
-      // ensure all keys exist
-      return Object.assign(defaultState(), s);
-    }
+    if (raw) return Object.assign(defaultState(), JSON.parse(raw));
   } catch(e) {}
   return defaultState();
 }
@@ -643,13 +769,26 @@ function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+// ========== UTILS ==========
+function esc(s) {
+  if (!s) return '';
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function getFilledAssets() {
+  return state.assets.map((a, i) => ({...a, idx: i})).filter(a => a.name.trim() !== '');
+}
+
 // ========== TABS ==========
 function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+  const tabBtn = document.querySelector(`[data-tab="${id}"]`);
+  tabBtn.classList.add('active');
+  tabBtn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
   document.getElementById(`panel-${id}`).classList.add('active');
   renderAll();
+  window.scrollTo({top: 0});
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -657,174 +796,224 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 });
 
 // ========== SCORING ==========
-function riskScore(rating) {
-  if (rating === 'Very Risky') return 3;
-  if (rating === 'Risky') return 2;
-  if (rating === 'Moderately Risky') return 1;
-  return 0;
-}
-
-function vulnScore(rating) {
-  if (rating === 'Very Vulnerable') return 3;
-  if (rating === 'Vulnerable') return 2;
-  if (rating === 'Moderately Vulnerable') return 2;
-  return 0;
-}
+function riskScore(r) { return r==='Very Risky'?3:r==='Risky'?2:r==='Moderately Risky'?1:0; }
+function vulnScore(v) { return v==='Very Vulnerable'?3:v==='Vulnerable'?2:v==='Moderately Vulnerable'?2:0; }
 
 function calcPriority(i) {
-  const r = state.riskRatings[i]?.rating || '';
-  const v = state.vulnRatings[i]?.rating || '';
-  const total = riskScore(r) + vulnScore(v);
+  const total = riskScore(state.riskRatings[i]?.rating||'') + vulnScore(state.vulnRatings[i]?.rating||'');
   return total > 0 ? total : null;
 }
 
 function priorityBadge(score) {
-  if (score === null || score === undefined) return '<span class="auto-cell empty">—</span>';
-  let cls = 'priority-low';
-  if (score >= 5) cls = 'priority-high';
-  else if (score >= 3) cls = 'priority-med';
+  if (score === null || score === undefined) return '<span class="auto-cell empty">\u2014</span>';
+  const cls = score >= 5 ? 'priority-high' : score >= 3 ? 'priority-med' : 'priority-low';
   return `<span class="priority-badge ${cls}">${score}</span>`;
 }
 
-// ========== RENDER FUNCTIONS ==========
-function getFilledAssets() {
-  return state.assets
-    .map((a, i) => ({...a, idx: i}))
-    .filter(a => a.name.trim() !== '');
+function emptyMsg(text) {
+  return `<div class="m-empty">${text}</div>`;
 }
 
+// ========== BIND HELPERS ==========
+function bindInputs(container, handler) {
+  container.querySelectorAll('input').forEach(inp => inp.addEventListener('input', handler));
+}
+function bindSelects(container, handler) {
+  container.querySelectorAll('select').forEach(sel => sel.addEventListener('change', handler));
+}
+function bindNumbers(container, handler) {
+  container.querySelectorAll('input[type="number"]').forEach(inp => inp.addEventListener('input', handler));
+}
+
+// ========== RENDER: STEP A ==========
 function renderTableA() {
   const tbody = document.getElementById('table-a');
+  const mob = document.getElementById('mobile-a');
+
   tbody.innerHTML = state.assets.map((a, i) => `
     <tr>
       <td class="row-num">${i+1}</td>
       <td><input type="text" value="${esc(a.name)}" data-i="${i}" data-field="name" placeholder="e.g., Gmail account"></td>
       <td><input type="text" value="${esc(a.desc)}" data-i="${i}" data-field="desc" placeholder="Primary email for personal and work"></td>
-    </tr>
-  `).join('');
-  tbody.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const i = +e.target.dataset.i;
-      state.assets[i][e.target.dataset.field] = e.target.value;
-      saveState();
-    });
-  });
+    </tr>`).join('');
+
+  mob.innerHTML = state.assets.map((a, i) => `
+    <div class="m-card">
+      <div class="m-card-num">Asset ${i+1}</div>
+      <div class="m-card-field">
+        <div class="m-card-label">Name</div>
+        <input type="text" value="${esc(a.name)}" data-i="${i}" data-field="name" placeholder="e.g., Gmail account">
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Description</div>
+        <input type="text" value="${esc(a.desc)}" data-i="${i}" data-field="desc" placeholder="Primary email for personal and work">
+      </div>
+    </div>`).join('');
+
+  const handler = e => {
+    state.assets[+e.target.dataset.i][e.target.dataset.field] = e.target.value;
+    saveState();
+  };
+  bindInputs(tbody, handler);
+  bindInputs(mob, handler);
 }
 
+// ========== RENDER: STEP B ==========
 function renderTableB() {
   const tbody = document.getElementById('table-b');
+  const mob = document.getElementById('mobile-b');
+
   tbody.innerHTML = state.threats.map((t, i) => `
     <tr>
       <td class="row-num">${i+1}</td>
       <td><input type="text" value="${esc(t.name)}" data-i="${i}" data-field="name" placeholder="e.g., Phishing scammer"></td>
       <td><input type="text" value="${esc(t.desc)}" data-i="${i}" data-field="desc" placeholder="Sends fake login pages via email"></td>
-    </tr>
-  `).join('');
-  tbody.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const i = +e.target.dataset.i;
-      state.threats[i][e.target.dataset.field] = e.target.value;
-      saveState();
-    });
-  });
+    </tr>`).join('');
+
+  mob.innerHTML = state.threats.map((t, i) => `
+    <div class="m-card">
+      <div class="m-card-num">Actor ${i+1}</div>
+      <div class="m-card-field">
+        <div class="m-card-label">Threat Actor</div>
+        <input type="text" value="${esc(t.name)}" data-i="${i}" data-field="name" placeholder="e.g., Phishing scammer">
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Description / Motivation</div>
+        <input type="text" value="${esc(t.desc)}" data-i="${i}" data-field="desc" placeholder="Sends fake login pages via email">
+      </div>
+    </div>`).join('');
+
+  const handler = e => {
+    state.threats[+e.target.dataset.i][e.target.dataset.field] = e.target.value;
+    saveState();
+  };
+  bindInputs(tbody, handler);
+  bindInputs(mob, handler);
 }
 
+// ========== RENDER: STEP C ==========
 function renderTableC() {
   const tbody = document.getElementById('table-c');
+  const mob = document.getElementById('mobile-c');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets listed yet. Go to Step A to add assets.</td></tr>';
+  const none = 'No assets listed yet. Go to Step A to add assets.';
+  if (!filled.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
+    mob.innerHTML = emptyMsg(none);
     return;
   }
+  const opts = (cur) => ['Very Risky','Risky','Moderately Risky'].map(v =>
+    `<option value="${v}" ${cur===v?'selected':''}>${v}</option>`).join('');
+
   tbody.innerHTML = filled.map(a => {
     const r = state.riskRatings[a.idx] || {};
-    return `
-    <tr>
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
-      <td>
-        <select data-i="${a.idx}">
-          <option value="">— Select —</option>
-          <option value="Very Risky" ${r.rating==='Very Risky'?'selected':''}>Very Risky</option>
-          <option value="Risky" ${r.rating==='Risky'?'selected':''}>Risky</option>
-          <option value="Moderately Risky" ${r.rating==='Moderately Risky'?'selected':''}>Moderately Risky</option>
-        </select>
-      </td>
+      <td><select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(r.rating)}</select></td>
       <td><input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" placeholder="Why this rating?"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('select').forEach(sel => {
-    sel.addEventListener('change', e => {
-      const i = e.target.dataset.i;
-      if (!state.riskRatings[i]) state.riskRatings[i] = {};
-      state.riskRatings[i].rating = e.target.value;
-      saveState();
-    });
-  });
-  tbody.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const i = e.target.dataset.i;
-      if (!state.riskRatings[i]) state.riskRatings[i] = {};
-      state.riskRatings[i].notes = e.target.value;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const r = state.riskRatings[a.idx] || {};
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-field">
+        <div class="m-card-label">Risk Rating</div>
+        <select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(r.rating)}</select>
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Notes</div>
+        <input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" placeholder="Why this rating?">
+      </div>
+    </div>`;
+  }).join('');
+
+  const selHandler = e => {
+    const i = e.target.dataset.i;
+    if (!state.riskRatings[i]) state.riskRatings[i] = {};
+    state.riskRatings[i].rating = e.target.value;
+    saveState();
+  };
+  const inpHandler = e => {
+    const i = e.target.dataset.i;
+    if (!state.riskRatings[i]) state.riskRatings[i] = {};
+    state.riskRatings[i].notes = e.target.value;
+    saveState();
+  };
+  [tbody, mob].forEach(el => { bindSelects(el, selHandler); bindInputs(el, inpHandler); });
 }
 
+// ========== RENDER: STEP D ==========
 function renderTableD() {
   const tbody = document.getElementById('table-d');
+  const mob = document.getElementById('mobile-d');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets listed yet. Go to Step A to add assets.</td></tr>';
+  const none = 'No assets listed yet. Go to Step A to add assets.';
+  if (!filled.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
+    mob.innerHTML = emptyMsg(none);
     return;
   }
+  const opts = (cur) => ['Very Vulnerable','Vulnerable','Moderately Vulnerable'].map(v =>
+    `<option value="${v}" ${cur===v?'selected':''}>${v}</option>`).join('');
+
   tbody.innerHTML = filled.map(a => {
     const v = state.vulnRatings[a.idx] || {};
-    return `
-    <tr>
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
-      <td>
-        <select data-i="${a.idx}">
-          <option value="">— Select —</option>
-          <option value="Very Vulnerable" ${v.rating==='Very Vulnerable'?'selected':''}>Very Vulnerable</option>
-          <option value="Vulnerable" ${v.rating==='Vulnerable'?'selected':''}>Vulnerable</option>
-          <option value="Moderately Vulnerable" ${v.rating==='Moderately Vulnerable'?'selected':''}>Moderately Vulnerable</option>
-        </select>
-      </td>
+      <td><select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(v.rating)}</select></td>
       <td><input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" placeholder="What makes it vulnerable?"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('select').forEach(sel => {
-    sel.addEventListener('change', e => {
-      const i = e.target.dataset.i;
-      if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
-      state.vulnRatings[i].rating = e.target.value;
-      saveState();
-    });
-  });
-  tbody.querySelectorAll('input').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const i = e.target.dataset.i;
-      if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
-      state.vulnRatings[i].notes = e.target.value;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const v = state.vulnRatings[a.idx] || {};
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-field">
+        <div class="m-card-label">Vulnerability Rating</div>
+        <select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(v.rating)}</select>
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Notes</div>
+        <input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" placeholder="What makes it vulnerable?">
+      </div>
+    </div>`;
+  }).join('');
+
+  const selHandler = e => {
+    const i = e.target.dataset.i;
+    if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
+    state.vulnRatings[i].rating = e.target.value;
+    saveState();
+  };
+  const inpHandler = e => {
+    const i = e.target.dataset.i;
+    if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
+    state.vulnRatings[i].notes = e.target.value;
+    saveState();
+  };
+  [tbody, mob].forEach(el => { bindSelects(el, selHandler); bindInputs(el, inpHandler); });
 }
 
+// ========== RENDER: THREAT RESULTS ==========
 function renderThreatResults() {
   const tbody = document.getElementById('table-threat');
+  const mob = document.getElementById('mobile-threat');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to score yet.</td></tr>';
-    document.getElementById('threat-summary').innerHTML = '';
+  const sumEl = document.getElementById('threat-summary');
+
+  if (!filled.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">No assets to score yet.</td></tr>';
+    mob.innerHTML = emptyMsg('No assets to score yet.');
+    sumEl.innerHTML = '';
     return;
   }
-  const scores = filled.map(a => ({...a, priority: calcPriority(a.idx)})).filter(a => a.priority !== null);
 
-  // Summary cards
-  const sumEl = document.getElementById('threat-summary');
+  const scores = filled.map(a => ({...a, priority: calcPriority(a.idx)})).filter(a => a.priority !== null);
   const highCount = scores.filter(s => s.priority >= 5).length;
   const medCount = scores.filter(s => s.priority >= 3 && s.priority < 5).length;
   const lowCount = scores.filter(s => s.priority > 0 && s.priority < 3).length;
@@ -832,184 +1021,289 @@ function renderThreatResults() {
     <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Assets Tracked</div></div>
     <div class="summary-card"><div class="num" style="color:var(--danger)">${highCount}</div><div class="label">High Priority</div></div>
     <div class="summary-card"><div class="num" style="color:var(--warning)">${medCount}</div><div class="label">Medium Priority</div></div>
-    <div class="summary-card"><div class="num" style="color:var(--success)">${lowCount}</div><div class="label">Lower Priority</div></div>
-  `;
+    <div class="summary-card"><div class="num" style="color:var(--success)">${lowCount}</div><div class="label">Lower Priority</div></div>`;
 
   tbody.innerHTML = filled.map(a => {
     const p = calcPriority(a.idx);
     const n = state.threatNotes[a.idx] || '';
-    return `
-    <tr>
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td><input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1–10"></td>
+      <td><input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1\u201310"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const val = e.target.value;
-      if (val && (+val < 1 || +val > 10)) return;
-      state.threatNotes[e.target.dataset.i] = val;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const n = state.threatNotes[a.idx] || '';
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Priority</div>
+          <div class="m-card-value">${priorityBadge(p)}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Notes (1\u201310)</div>
+          <input type="number" min="1" max="10" value="${n}" data-i="${a.idx}" placeholder="1\u201310">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const handler = e => {
+    const val = e.target.value;
+    if (val && (+val < 1 || +val > 10)) return;
+    state.threatNotes[e.target.dataset.i] = val;
+    saveState();
+  };
+  bindNumbers(tbody, handler);
+  bindNumbers(mob, handler);
 }
 
+// ========== RENDER: STEP E ==========
 function renderTableE() {
   const tbody = document.getElementById('table-e');
+  const mob = document.getElementById('mobile-e');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+  const none = 'No assets to evaluate.';
+  if (!filled.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
+    mob.innerHTML = emptyMsg(none);
     return;
   }
+
   tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    return `
-    <tr>
+    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx] || '';
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td><input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1–10"></td>
+      <td><input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1\u201310"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const val = e.target.value;
-      if (val && (+val < 1 || +val > 10)) return;
-      state.fixScores[e.target.dataset.i] = val;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx] || '';
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Priority</div>
+          <div class="m-card-value">${priorityBadge(p)}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Ease of Fixing (1\u201310)</div>
+          <input type="number" min="1" max="10" value="${fix}" data-i="${a.idx}" placeholder="1\u201310">
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const handler = e => {
+    const val = e.target.value;
+    if (val && (+val < 1 || +val > 10)) return;
+    state.fixScores[e.target.dataset.i] = val;
+    saveState();
+  };
+  bindNumbers(tbody, handler);
+  bindNumbers(mob, handler);
 }
 
+// ========== RENDER: STEP F ==========
 function renderTableF() {
   const tbody = document.getElementById('table-f');
+  const mob = document.getElementById('mobile-f');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+  const none = 'No assets to evaluate.';
+  if (!filled.length) {
+    tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
+    mob.innerHTML = emptyMsg(none);
     return;
   }
+
   tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    const rep = state.replaceScores[a.idx] || '';
-    return `
-    <tr>
+    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx]||''; const rep = state.replaceScores[a.idx]||'';
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
-      <td><input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1–10"></td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
+      <td><input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1\u201310"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const val = e.target.value;
-      if (val && (+val < 1 || +val > 10)) return;
-      state.replaceScores[e.target.dataset.i] = val;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx]||''; const rep = state.replaceScores[a.idx]||'';
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Priority</div>
+          <div class="m-card-value">${priorityBadge(p)}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Fix Score</div>
+          <div class="m-card-value">${fix||'\u2014'}</div>
+        </div>
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Ease of Replacing (1\u201310)</div>
+        <input type="number" min="1" max="10" value="${rep}" data-i="${a.idx}" placeholder="1\u201310">
+      </div>
+    </div>`;
+  }).join('');
+
+  const handler = e => {
+    const val = e.target.value;
+    if (val && (+val < 1 || +val > 10)) return;
+    state.replaceScores[e.target.dataset.i] = val;
+    saveState();
+  };
+  bindNumbers(tbody, handler);
+  bindNumbers(mob, handler);
 }
 
+// ========== RENDER: STEP G ==========
 function renderTableG() {
   const tbody = document.getElementById('table-g');
+  const mob = document.getElementById('mobile-g');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to evaluate.</td></tr>';
+  const none = 'No assets to evaluate.';
+  if (!filled.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
+    mob.innerHTML = emptyMsg(none);
     return;
   }
+
   tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    const rep = state.replaceScores[a.idx] || '';
-    const rem = state.removeScores[a.idx] || '';
-    return `
-    <tr>
+    const p = calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
-      <td class="auto-cell ${rep?'':'empty'}">${rep||'—'}</td>
-      <td><input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1–10"></td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
+      <td class="auto-cell ${rep?'':'empty'}">${rep||'\u2014'}</td>
+      <td><input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1\u201310"></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('input[type="number"]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      const val = e.target.value;
-      if (val && (+val < 1 || +val > 10)) return;
-      state.removeScores[e.target.dataset.i] = val;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Priority</div>
+          <div class="m-card-value">${priorityBadge(p)}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Fix</div>
+          <div class="m-card-value">${fix||'\u2014'}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Replace</div>
+          <div class="m-card-value">${rep||'\u2014'}</div>
+        </div>
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Ease of Removing (1\u201310)</div>
+        <input type="number" min="1" max="10" value="${rem}" data-i="${a.idx}" placeholder="1\u201310">
+      </div>
+    </div>`;
+  }).join('');
+
+  const handler = e => {
+    const val = e.target.value;
+    if (val && (+val < 1 || +val > 10)) return;
+    state.removeScores[e.target.dataset.i] = val;
+    saveState();
+  };
+  bindNumbers(tbody, handler);
+  bindNumbers(mob, handler);
 }
 
+// ========== RENDER: MITIGATION RESULTS ==========
 function renderMitigationResults() {
   const tbody = document.getElementById('table-mitigation');
+  const mob = document.getElementById('mobile-mitigation');
   const filled = getFilledAssets();
-  if (filled.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:24px; text-align:center; color:var(--text-muted)">No assets to summarize.</td></tr>';
-    document.getElementById('mitigation-summary').innerHTML = '';
+  const sumEl = document.getElementById('mitigation-summary');
+
+  if (!filled.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="padding:24px;text-align:center;color:var(--text-muted)">No assets to summarize.</td></tr>';
+    mob.innerHTML = emptyMsg('No assets to summarize.');
+    sumEl.innerHTML = '';
     return;
   }
 
-  let fixBest = 0, repBest = 0, remBest = 0;
+  let fixBest=0, repBest=0, remBest=0;
   filled.forEach(a => {
-    const fix = +(state.fixScores[a.idx]||0);
-    const rep = +(state.replaceScores[a.idx]||0);
-    const rem = +(state.removeScores[a.idx]||0);
-    const max = Math.max(fix, rep, rem);
-    if (max > 0) {
-      if (max === fix) fixBest++;
-      else if (max === rep) repBest++;
-      else remBest++;
-    }
+    const f=+(state.fixScores[a.idx]||0), r=+(state.replaceScores[a.idx]||0), m=+(state.removeScores[a.idx]||0);
+    const mx=Math.max(f,r,m);
+    if(mx>0){if(mx===f)fixBest++;else if(mx===r)repBest++;else remBest++;}
   });
 
-  const sumEl = document.getElementById('mitigation-summary');
   sumEl.innerHTML = `
     <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Total Assets</div></div>
     <div class="summary-card"><div class="num" style="color:#2980b9">${fixBest}</div><div class="label">Best to Fix</div></div>
     <div class="summary-card"><div class="num" style="color:#8e44ad">${repBest}</div><div class="label">Best to Replace</div></div>
-    <div class="summary-card"><div class="num" style="color:#e67e22">${remBest}</div><div class="label">Best to Remove</div></div>
-  `;
+    <div class="summary-card"><div class="num" style="color:#e67e22">${remBest}</div><div class="label">Best to Remove</div></div>`;
 
   tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    const rep = state.replaceScores[a.idx] || '';
-    const rem = state.removeScores[a.idx] || '';
-    const notes = state.mitigationNotes[a.idx] || '';
-    return `
-    <tr>
+    const p=calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||'';
+    const rem=state.removeScores[a.idx]||''; const notes=state.mitigationNotes[a.idx]||'';
+    return `<tr>
       <td class="row-num">${a.idx+1}</td>
       <td class="auto-cell">${esc(a.name)}</td>
       <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'—'}</td>
-      <td class="auto-cell ${rep?'':'empty'}">${rep||'—'}</td>
-      <td class="auto-cell ${rem?'':'empty'}">${rem||'—'}</td>
+      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
+      <td class="auto-cell ${rep?'':'empty'}">${rep||'\u2014'}</td>
+      <td class="auto-cell ${rem?'':'empty'}">${rem||'\u2014'}</td>
       <td><input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="Your action plan..."></td>
     </tr>`;
   }).join('');
-  tbody.querySelectorAll('input[type="text"]').forEach(inp => {
-    inp.addEventListener('input', e => {
-      state.mitigationNotes[e.target.dataset.i] = e.target.value;
-      saveState();
-    });
-  });
+
+  mob.innerHTML = filled.map(a => {
+    const p=calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||'';
+    const rem=state.removeScores[a.idx]||''; const notes=state.mitigationNotes[a.idx]||'';
+    return `<div class="m-card">
+      <div class="m-card-num">${esc(a.name)}</div>
+      <div class="m-card-row">
+        <div class="m-card-field">
+          <div class="m-card-label">Priority</div>
+          <div class="m-card-value">${priorityBadge(p)}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Fix</div>
+          <div class="m-card-value">${fix||'\u2014'}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Replace</div>
+          <div class="m-card-value">${rep||'\u2014'}</div>
+        </div>
+        <div class="m-card-field">
+          <div class="m-card-label">Remove</div>
+          <div class="m-card-value">${rem||'\u2014'}</div>
+        </div>
+      </div>
+      <div class="m-card-field">
+        <div class="m-card-label">Action Plan</div>
+        <input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="Your action plan...">
+      </div>
+    </div>`;
+  }).join('');
+
+  const handler = e => { state.mitigationNotes[e.target.dataset.i] = e.target.value; saveState(); };
+  bindInputs(tbody, handler);
+  bindInputs(mob, handler);
 }
 
+// ========== RENDER ALL ==========
 function renderAll() {
-  renderTableA();
-  renderTableB();
-  renderTableC();
-  renderTableD();
-  renderThreatResults();
-  renderTableE();
-  renderTableF();
-  renderTableG();
+  renderTableA(); renderTableB(); renderTableC(); renderTableD();
+  renderThreatResults(); renderTableE(); renderTableF(); renderTableG();
   renderMitigationResults();
 }
 
@@ -1018,40 +1312,35 @@ function addAssetRow() {
   state.assets.push({name: '', desc: ''});
   saveState();
   renderTableA();
-  // focus the new row
-  const rows = document.querySelectorAll('#table-a input[data-field="name"]');
-  rows[rows.length-1]?.focus();
+  const sel = window.matchMedia('(max-width:768px)').matches ? '#mobile-a' : '#table-a';
+  const rows = document.querySelectorAll(`${sel} input[data-field="name"]`);
+  const last = rows[rows.length-1];
+  if (last) { last.scrollIntoView({behavior:'smooth',block:'center'}); last.focus(); }
 }
 
 function addThreatRow() {
   state.threats.push({name: '', desc: ''});
   saveState();
   renderTableB();
-  const rows = document.querySelectorAll('#table-b input[data-field="name"]');
-  rows[rows.length-1]?.focus();
+  const sel = window.matchMedia('(max-width:768px)').matches ? '#mobile-b' : '#table-b';
+  const rows = document.querySelectorAll(`${sel} input[data-field="name"]`);
+  const last = rows[rows.length-1];
+  if (last) { last.scrollIntoView({behavior:'smooth',block:'center'}); last.focus(); }
 }
 
-// ========== EXPORT / UTILS ==========
-function esc(s) {
-  if (!s) return '';
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+// ========== EXPORT ==========
 function exportCSV() {
   const filled = getFilledAssets();
-  if (filled.length === 0) { alert('No data to export.'); return; }
+  if (!filled.length) { alert('No data to export.'); return; }
   let csv = 'Asset Name,Risk Rating,Vulnerability Rating,Priority Score,Ease of Fix,Ease of Replace,Ease of Remove,Action Plan\n';
   filled.forEach(a => {
-    const r = state.riskRatings[a.idx]?.rating || '';
-    const v = state.vulnRatings[a.idx]?.rating || '';
-    const p = calcPriority(a.idx) ?? '';
-    const fix = state.fixScores[a.idx] || '';
-    const rep = state.replaceScores[a.idx] || '';
-    const rem = state.removeScores[a.idx] || '';
-    const notes = (state.mitigationNotes[a.idx] || '').replace(/"/g, '""');
+    const r=state.riskRatings[a.idx]?.rating||''; const v=state.vulnRatings[a.idx]?.rating||'';
+    const p=calcPriority(a.idx)??''; const fix=state.fixScores[a.idx]||'';
+    const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
+    const notes=(state.mitigationNotes[a.idx]||'').replace(/"/g,'""');
     csv += `"${a.name.replace(/"/g,'""')}","${r}","${v}","${p}","${fix}","${rep}","${rem}","${notes}"\n`;
   });
-  const blob = new Blob([csv], {type: 'text/csv'});
+  const blob = new Blob([csv], {type:'text/csv'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
   a.download = 'threat_risk_assessment.csv';
