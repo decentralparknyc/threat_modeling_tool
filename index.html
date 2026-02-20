@@ -70,17 +70,10 @@
     text-decoration: none;
     cursor: pointer;
   }
-  .brand-mark .logo-dot {
-    width: 28px;
-    height: 28px;
-    background: var(--accent);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 800;
-    font-size: 14px;
+  .brand-mark img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
   }
 
   .step-counter {
@@ -104,69 +97,7 @@
     border-radius: 0 2px 2px 0;
   }
 
-  /* ===== STEPPER (desktop) ===== */
-  .stepper-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    padding: 10px 24px 12px;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  .stepper-row::-webkit-scrollbar { display: none; }
-
-  .step-dot-wrap {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-  .step-dot {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 2px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-muted);
-    background: var(--surface);
-    transition: all var(--transition);
-    position: relative;
-  }
-  .step-dot.active {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: white;
-    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
-  }
-  .step-dot.completed {
-    border-color: var(--accent);
-    background: var(--accent-muted);
-    color: var(--accent);
-  }
-  .step-dot.result-dot.active {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .step-line {
-    width: 20px;
-    height: 2px;
-    background: var(--border);
-    flex-shrink: 0;
-    transition: background var(--transition);
-  }
-  .step-line.filled {
-    background: var(--accent-border);
-  }
-
-  .step-label {
-    display: none;
-  }
+  /* stepper removed — using progress bar only */
 
   /* ===== MAIN CONTENT ===== */
   .main-content {
@@ -572,15 +503,14 @@
     padding: 20px 0 40px;
   }
   .hero-icon {
-    width: 64px;
-    height: 64px;
-    background: var(--accent-soft);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 80px;
+    height: 80px;
     margin: 0 auto 24px;
-    font-size: 28px;
+  }
+  .hero-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
   .hero h1 {
     font-size: 36px;
@@ -705,16 +635,6 @@
       padding: 10px 16px;
     }
 
-    .stepper-row {
-      padding: 8px 12px 10px;
-    }
-    .step-dot {
-      width: 26px;
-      height: 26px;
-      font-size: 10px;
-    }
-    .step-line { width: 12px; }
-
     .hero h1 { font-size: 26px; }
     .hero p { font-size: 14px; }
 
@@ -768,13 +688,11 @@
     .toolbar-row .btn { width: 100%; justify-content: center; }
 
     .brand-mark { font-size: 13px; }
-    .brand-mark .logo-dot { width: 24px; height: 24px; font-size: 12px; }
+    .brand-mark img { width: 26px; height: 26px; }
   }
 
   @media (max-width: 380px) {
     .hero h1 { font-size: 22px; }
-    .step-dot { width: 22px; height: 22px; font-size: 9px; }
-    .step-line { width: 8px; }
   }
 
   /* ===== PRINT ===== */
@@ -792,12 +710,11 @@
 <div class="progress-header">
   <div class="progress-top">
     <div class="brand-mark" onclick="goToStep(0)">
-      <div class="logo-dot">DP</div>
+      <img src="logo.png" alt="Decentral Park">
       <span>Decentral Park</span>
     </div>
     <div class="step-counter" id="stepCounter"></div>
   </div>
-  <div class="stepper-row" id="stepperRow"></div>
   <div class="progress-bar-track">
     <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
   </div>
@@ -809,7 +726,7 @@
   <!-- 0: INTRO -->
   <div class="step-panel active" id="panel-0">
     <div class="hero">
-      <div class="hero-icon">&#x1f6e1;</div>
+      <div class="hero-icon"><img src="logo.png" alt="Decentral Park"></div>
       <h1>Threat Risk<br>Assessment</h1>
       <p>A guided, step-by-step workflow to identify, prioritize, and plan mitigations for your digital asset risks.</p>
       <div class="steps-preview">
@@ -1014,19 +931,6 @@ const STORAGE_KEY = 'threat_risk_tool_data';
 const DEFAULT_ROW_COUNT = 10;
 const TOTAL_STEPS = 10; // 0=intro, 1-8=steps, 9=final
 
-const STEP_META = [
-  { label: 'Start', short: '&#x2302;' },
-  { label: 'Assets', short: 'A' },
-  { label: 'Threats', short: 'B' },
-  { label: 'Risk', short: 'C' },
-  { label: 'Vuln', short: 'D' },
-  { label: 'Results', short: '!' },
-  { label: 'Fix', short: 'E' },
-  { label: 'Replace', short: 'F' },
-  { label: 'Remove', short: 'G' },
-  { label: 'Final', short: '&#x2713;' }
-];
-
 let currentStep = 0;
 let state = loadState();
 
@@ -1066,35 +970,8 @@ function getFilledAssets() {
   return state.assets.map((a, i) => ({...a, idx: i})).filter(a => a.name.trim() !== '');
 }
 
-// ========== STEPPER ==========
-function buildStepper() {
-  const row = document.getElementById('stepperRow');
-  let html = '';
-  for (let i = 0; i < TOTAL_STEPS; i++) {
-    const isResult = i === 5 || i === 9;
-    html += `<div class="step-dot-wrap" onclick="goToStep(${i})">`;
-    html += `<div class="step-dot${isResult ? ' result-dot' : ''}" id="dot-${i}">${STEP_META[i].short}</div>`;
-    html += `</div>`;
-    if (i < TOTAL_STEPS - 1) {
-      html += `<div class="step-line" id="line-${i}"></div>`;
-    }
-  }
-  row.innerHTML = html;
-}
-
-function updateStepper() {
-  for (let i = 0; i < TOTAL_STEPS; i++) {
-    const dot = document.getElementById(`dot-${i}`);
-    dot.classList.remove('active', 'completed');
-    if (i === currentStep) dot.classList.add('active');
-    else if (i < currentStep) dot.classList.add('completed');
-
-    if (i < TOTAL_STEPS - 1) {
-      const line = document.getElementById(`line-${i}`);
-      line.classList.toggle('filled', i < currentStep);
-    }
-  }
-
+// ========== PROGRESS BAR ==========
+function updateProgress() {
   const pct = currentStep === 0 ? 0 : (currentStep / (TOTAL_STEPS - 1)) * 100;
   document.getElementById('progressFill').style.width = pct + '%';
 
@@ -1112,13 +989,9 @@ function goToStep(n) {
   currentStep = n;
   const panel = document.getElementById(`panel-${n}`);
   panel.classList.add('active');
-  updateStepper();
+  updateProgress();
   renderCurrentStep();
   window.scrollTo({top: 0, behavior: 'smooth'});
-
-  // scroll active dot into view
-  const dot = document.getElementById(`dot-${n}`);
-  if (dot) dot.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
 }
 
 // ========== SCORING ==========
@@ -1581,8 +1454,7 @@ function clearAll() {
 }
 
 // ========== INIT ==========
-buildStepper();
-updateStepper();
+updateProgress();
 </script>
 </body>
 </html>
