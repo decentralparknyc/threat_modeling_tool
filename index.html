@@ -6,188 +6,315 @@
 <title>Threat Risk Assessment — Decentral Park</title>
 <style>
   :root {
-    --bg: #f9fafb;
+    --bg: #fafbfc;
     --surface: #ffffff;
     --primary: #0a0a0a;
     --accent: #16a34a;
-    --accent-dark: #15803d;
-    --accent-light: #166534;
-    --info: #f0fdf4;
-    --info-border: #86efac;
-    --text: #0a0a0a;
-    --text-muted: #6b7280;
+    --accent-hover: #15803d;
+    --accent-soft: #f0fdf4;
+    --accent-border: #bbf7d0;
+    --accent-muted: #dcfce7;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
     --border: #e5e7eb;
-    --header-bg: #0a0a0a;
-    --header-text: #ffffff;
-    --row-alt: #f9fafb;
-    --row-hover: #f0fdf4;
-    --danger: #dc2626;
-    --success: #16a34a;
-    --warning: #d97706;
-    --tab-active: #16a34a;
-    --tab-inactive: #9ca3af;
+    --border-light: #f3f4f6;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --radius-xs: 8px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
   }
 
-  .app-header {
-    background: var(--header-bg);
-    color: var(--header-text);
-    padding: 28px 32px;
-    text-align: center;
-  }
-  .app-header .brand {
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: #86efac;
-    margin-bottom: 8px;
-  }
-  .app-header h1 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-    margin-bottom: 6px;
-  }
-  .app-header p {
-    font-size: 14px;
-    opacity: 0.6;
-  }
-
-  .tab-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    background: #111111;
-    padding: 6px 16px 0;
+  /* ===== PROGRESS HEADER ===== */
+  .progress-header {
     position: sticky;
     top: 0;
     z-index: 100;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    backdrop-filter: blur(12px);
+    background: rgba(255,255,255,0.92);
   }
-  .tab-btn {
-    padding: 10px 18px;
-    border: none;
-    background: transparent;
-    color: rgba(255,255,255,0.45);
-    font-size: 13px;
-    font-weight: 600;
+
+  .progress-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+  }
+
+  .brand-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--primary);
+    letter-spacing: -0.3px;
+    text-decoration: none;
     cursor: pointer;
-    border-radius: 8px 8px 0 0;
-    transition: all 0.2s;
-    white-space: nowrap;
   }
-  .tab-btn:hover { color: rgba(255,255,255,0.8); background: rgba(255,255,255,0.06); }
-  .tab-btn.active {
-    background: var(--bg);
+  .brand-mark .logo-dot {
+    width: 28px;
+    height: 28px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .step-counter {
+    font-size: 13px;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  .step-counter strong {
     color: var(--accent);
   }
-  .tab-btn.result-tab { color: rgba(134,239,172,0.6); }
-  .tab-btn.result-tab.active { color: var(--accent); background: var(--bg); }
 
-  .tab-panel { display: none; padding: 24px; max-width: 1100px; margin: 0 auto; }
-  .tab-panel.active { display: block; }
-
-  .exercise-card {
-    background: var(--surface);
-    border-radius: 12px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    overflow: hidden;
-    margin-bottom: 24px;
-  }
-
-  .exercise-title {
-    background: var(--primary);
-    color: white;
-    padding: 16px 24px;
-    font-size: 18px;
-    font-weight: 700;
-  }
-
-  .exercise-instructions {
-    background: var(--info);
-    border-left: 4px solid var(--info-border);
-    padding: 16px 24px;
-    font-size: 14px;
-    line-height: 1.65;
-    color: var(--text);
-  }
-
-  .table-wrap { overflow-x: auto; padding: 0; }
-
-  table {
+  .progress-bar-track {
+    height: 3px;
+    background: var(--border-light);
     width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
   }
-  thead th {
-    background: #1a1a1a;
-    color: #f3f4f6;
-    padding: 12px 16px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 13px;
-    position: sticky;
-    top: 0;
-    white-space: nowrap;
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 0 2px 2px 0;
   }
-  tbody tr { border-bottom: 1px solid var(--border); }
-  tbody tr:nth-child(even) { background: var(--row-alt); }
-  tbody tr:hover { background: var(--row-hover); }
-  td { padding: 4px 8px; vertical-align: top; }
+
+  /* ===== STEPPER (desktop) ===== */
+  .stepper-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 10px 24px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stepper-row::-webkit-scrollbar { display: none; }
+
+  .step-dot-wrap {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .step-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--surface);
+    transition: all var(--transition);
+    position: relative;
+  }
+  .step-dot.active {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(22, 163, 74, 0.15);
+  }
+  .step-dot.completed {
+    border-color: var(--accent);
+    background: var(--accent-muted);
+    color: var(--accent);
+  }
+  .step-dot.result-dot.active {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .step-line {
+    width: 20px;
+    height: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+    transition: background var(--transition);
+  }
+  .step-line.filled {
+    background: var(--accent-border);
+  }
+
+  .step-label {
+    display: none;
+  }
+
+  /* ===== MAIN CONTENT ===== */
+  .main-content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 32px 24px 120px;
+  }
+
+  /* ===== STEP PANELS ===== */
+  .step-panel {
+    display: none;
+    animation: fadeSlideIn 0.35s ease-out;
+  }
+  .step-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== STEP HEADER ===== */
+  .step-header {
+    margin-bottom: 28px;
+  }
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    margin-bottom: 12px;
+  }
+  .step-header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .step-header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  /* ===== ASSET / THREAT ITEM ===== */
+  .item-row {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+    transition: background var(--transition);
+  }
+  .item-row:last-child { border-bottom: none; }
+  .item-row:hover { background: #fafbfc; }
+
+  .item-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .field-group {
+    margin-bottom: 12px;
+  }
+  .field-group:last-child { margin-bottom: 0; }
+
+  .field-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 5px;
+  }
 
   input[type="text"], textarea {
     width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
+    font-size: 15px;
     font-family: inherit;
-    transition: border-color 0.2s;
-    background: transparent;
+    transition: all var(--transition);
+    background: var(--surface);
+    color: var(--text);
   }
   input[type="text"]:focus, textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 2px rgba(22,163,74,0.15);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
   }
-  textarea { resize: vertical; min-height: 36px; }
+  input[type="text"]::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+  }
+  textarea { resize: vertical; min-height: 44px; }
 
   select {
     width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    padding: 10px 14px;
+    font-size: 15px;
     font-family: inherit;
-    background: white;
+    background: var(--surface);
     cursor: pointer;
+    transition: all var(--transition);
+    color: var(--text);
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 36px;
   }
-  select:focus { outline: none; border-color: var(--accent); }
-
-  input[type="number"] {
-    width: 80px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 8px 10px;
-    font-size: 13px;
-    font-family: inherit;
-    text-align: center;
+  select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(22,163,74,0.1);
   }
-  input[type="number"]:focus { outline: none; border-color: var(--accent); }
 
+  /* ===== SLIDERS ===== */
   .slider-wrap {
     display: flex;
     align-items: center;
-    gap: 10px;
-    min-width: 140px;
+    gap: 14px;
   }
   .slider-wrap input[type="range"] {
     flex: 1;
@@ -198,632 +325,715 @@
     border-radius: 3px;
     outline: none;
     cursor: pointer;
+    transition: opacity var(--transition);
   }
   .slider-wrap input[type="range"]::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--accent);
-    border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    border: 2.5px solid white;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
     cursor: pointer;
-    transition: transform 0.15s;
+    transition: transform 0.15s ease;
   }
   .slider-wrap input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.15);
   }
   .slider-wrap input[type="range"]::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: var(--accent);
-    border: 2px solid white;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    border: 2.5px solid white;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.15);
     cursor: pointer;
   }
   .slider-val {
-    min-width: 24px;
-    text-align: center;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--text);
+    min-width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--accent);
+    background: var(--accent-soft);
+    border-radius: 8px;
   }
-  .slider-val.empty { color: var(--text-muted); font-weight: 400; }
-  .slider-wrap input[type="range"].unset {
-    opacity: 0.35;
-  }
-
-  .row-num {
+  .slider-val.empty {
     color: var(--text-muted);
-    font-size: 12px;
-    text-align: center;
-    min-width: 30px;
+    background: var(--border-light);
+    font-weight: 500;
+  }
+  .slider-wrap input[type="range"].unset {
+    opacity: 0.3;
   }
 
-  .auto-cell {
-    padding: 8px 10px;
-    font-size: 13px;
-    color: var(--text);
-    min-height: 36px;
+  /* ===== ADD ROW BUTTON ===== */
+  .add-row-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    margin-top: 12px;
   }
-  .auto-cell.empty { color: var(--text-muted); font-style: italic; }
+  .add-row-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
 
-  .priority-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+  /* ===== NAVIGATION ===== */
+  .nav-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    gap: 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 28px;
+    border-radius: var(--radius-sm);
+    font-size: 15px;
     font-weight: 700;
-    text-align: center;
-    min-width: 28px;
+    cursor: pointer;
+    transition: all var(--transition);
+    border: none;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: white;
+    box-shadow: 0 2px 8px rgba(22,163,74,0.25);
+  }
+  .btn-primary:hover {
+    background: var(--accent-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(22,163,74,0.3);
+  }
+
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover {
+    background: var(--border-light);
+    color: var(--text);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    padding: 12px 16px;
+  }
+  .btn-ghost:hover {
+    background: var(--border-light);
+    color: var(--text);
+  }
+
+  .btn-danger {
+    background: transparent;
+    color: var(--danger);
+    border: 1.5px solid #fecaca;
+  }
+  .btn-danger:hover {
+    background: #fef2f2;
+  }
+
+  /* ===== PRIORITY BADGES ===== */
+  .priority-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 800;
+    min-width: 32px;
   }
   .priority-high { background: #fef2f2; color: #dc2626; }
   .priority-med { background: #fffbeb; color: #d97706; }
   .priority-low { background: #f0fdf4; color: #16a34a; }
 
-  .nav-row {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+  /* ===== SUMMARY CARDS ===== */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
   }
-  .nav-btn {
-    padding: 10px 24px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 20px 16px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-secondary);
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
   }
-  .nav-btn.prev { background: var(--border); color: var(--text); }
-  .nav-btn.prev:hover { background: #d1d5db; }
-  .nav-btn.next { background: var(--accent); color: white; }
-  .nav-btn.next:hover { background: var(--accent-dark); }
 
-  .score-cell { font-weight: 700; font-size: 14px; }
-
-  .add-row-btn {
+  /* ===== RESULT ROW ===== */
+  .result-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .result-item:last-child { border-bottom: none; }
+  .result-item:hover { background: #fafbfc; }
+  .result-name {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    flex: 1;
+    min-width: 0;
+  }
+  .result-scores {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .score-chip {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    margin: 12px 16px;
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    background: transparent;
-    color: var(--text-muted);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .add-row-btn:hover { border-color: var(--accent); color: var(--accent-dark); }
-
-  .intro-content {
-    padding: 32px;
-    line-height: 1.8;
-    font-size: 15px;
-  }
-  .intro-content h2 { margin: 20px 0 10px; color: var(--primary); font-size: 18px; }
-  .intro-content ol { padding-left: 24px; }
-  .intro-content li { margin: 6px 0; }
-  .intro-content .start-btn {
-    display: inline-block;
-    margin-top: 24px;
-    padding: 14px 36px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 12px;
     font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: var(--border-light);
+    color: var(--text-secondary);
   }
-  .intro-content .start-btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+  .score-chip.best {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
 
-  .toolbar {
+  /* ===== AUTO CELL ===== */
+  .auto-val {
+    font-size: 14px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .auto-val.empty {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+
+  /* ===== TOOLBAR ===== */
+  .toolbar-row {
     display: flex;
     gap: 10px;
-    padding: 12px 16px;
-    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    margin-top: 20px;
+  }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* ===== HERO / INTRO ===== */
+  .hero {
+    text-align: center;
+    padding: 20px 0 40px;
+  }
+  .hero-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--accent-soft);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 28px;
+  }
+  .hero h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+    line-height: 1.15;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 480px;
+    margin: 0 auto 32px;
+  }
+
+  .steps-preview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 36px;
+  }
+  .preview-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: var(--radius-xs);
+    background: var(--surface);
+    border: 1px solid var(--border);
+  }
+  .preview-num {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .preview-text {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .preview-text strong {
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+
+  .privacy-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 20px;
+  }
+
+  /* ===== INLINE FIELDS (rating cards) ===== */
+  .rating-card {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .rating-card:last-child { border-bottom: none; }
+  .rating-card:hover { background: #fafbfc; }
+  .rating-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .rating-fields {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .rating-fields .field-group {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  /* ===== MITIGATION TABLE (mobile-first cards) ===== */
+  .mit-card {
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .mit-card:last-child { border-bottom: none; }
+  .mit-card:hover { background: #fafbfc; }
+  .mit-name {
+    font-weight: 700;
+    font-size: 15px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     flex-wrap: wrap;
   }
-  .toolbar button {
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    background: white;
-    font-size: 12px;
-    cursor: pointer;
-    transition: all 0.2s;
+  .mit-scores {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
   }
-  .toolbar button:hover { border-color: var(--accent); color: var(--accent); }
-
-  .results-summary {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    padding: 20px 0;
+  .mit-action {
+    margin-top: 8px;
   }
-  .summary-card {
-    background: var(--surface);
-    border-radius: 10px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  }
-  .summary-card .num { font-size: 32px; font-weight: 800; color: var(--primary); }
-  .summary-card .label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-  /* ===== MOBILE: card layout for data rows ===== */
-  .mobile-card { display: none; }
-
-  @media (max-width: 768px) {
-    .app-header { padding: 20px 16px; }
-    .app-header h1 { font-size: 20px; }
-    .app-header p { font-size: 12px; }
-
-    .tab-bar {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      padding: 6px 8px 0;
-      gap: 1px;
-    }
-    .tab-bar::-webkit-scrollbar { display: none; }
-    .tab-btn {
-      padding: 8px 12px;
-      font-size: 11px;
-      flex-shrink: 0;
+  /* ===== MOBILE ===== */
+  @media (max-width: 640px) {
+    .main-content {
+      padding: 20px 16px 120px;
     }
 
-    .tab-panel { padding: 10px; }
+    .progress-top {
+      padding: 10px 16px;
+    }
 
-    .exercise-title { font-size: 16px; padding: 14px 16px; }
-    .exercise-instructions { padding: 12px 16px; font-size: 13px; }
-    .intro-content { padding: 20px 16px; font-size: 14px; }
-    .intro-content h2 { font-size: 16px; }
-
-    /* Hide desktop tables, show mobile cards */
-    .table-wrap { display: none; }
-    .mobile-card { display: block; }
-
-    .m-card {
-      border-bottom: 1px solid var(--border);
-      padding: 14px 16px;
+    .stepper-row {
+      padding: 8px 12px 10px;
     }
-    .m-card:nth-child(even) { background: var(--row-alt); }
-    .m-card-num {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-    .m-card-field {
-      margin-bottom: 10px;
-    }
-    .m-card-field:last-child { margin-bottom: 0; }
-    .m-card-label {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 4px;
-    }
-    .m-card-value {
-      font-size: 14px;
-      color: var(--text);
-    }
-    .m-card input[type="text"],
-    .m-card textarea {
-      width: 100%;
-      font-size: 16px;
-      padding: 10px 12px;
-    }
-    .m-card select {
-      width: 100%;
-      font-size: 16px;
-      padding: 10px 12px;
-    }
-    .m-card input[type="number"] {
-      width: 100%;
-      font-size: 16px;
-      padding: 10px 12px;
-      text-align: left;
-    }
-    .m-card .slider-wrap {
-      gap: 12px;
-    }
-    .m-card .slider-wrap input[type="range"] {
-      height: 8px;
-    }
-    .m-card .slider-wrap input[type="range"]::-webkit-slider-thumb {
+    .step-dot {
       width: 26px;
       height: 26px;
+      font-size: 10px;
     }
-    .m-card .slider-wrap input[type="range"]::-moz-range-thumb {
-      width: 26px;
-      height: 26px;
+    .step-line { width: 12px; }
+
+    .hero h1 { font-size: 26px; }
+    .hero p { font-size: 14px; }
+
+    .step-header h1 { font-size: 22px; }
+    .step-header p { font-size: 14px; }
+
+    .steps-preview {
+      grid-template-columns: 1fr;
     }
-    .m-card .slider-val { font-size: 16px; min-width: 28px; }
-    .m-card-row {
-      display: flex;
-      gap: 10px;
+
+    input[type="text"], textarea, select {
+      font-size: 16px;
+    }
+
+    .rating-fields {
+      flex-direction: column;
+    }
+
+    .btn {
+      padding: 14px 24px;
+      font-size: 15px;
+    }
+
+    .nav-footer {
       flex-wrap: wrap;
     }
-    .m-card-row .m-card-field { flex: 1; min-width: 80px; }
-    .m-card .auto-cell {
-      padding: 0;
-      font-size: 14px;
+
+    .slider-wrap input[type="range"] { height: 8px; }
+    .slider-wrap input[type="range"]::-webkit-slider-thumb {
+      width: 28px;
+      height: 28px;
     }
-    .m-card .priority-badge { font-size: 13px; }
-
-    .m-empty {
-      padding: 24px 16px;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 14px;
+    .slider-wrap input[type="range"]::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
     }
-
-    .nav-row { padding: 0 16px 16px !important; gap: 10px; }
-    .nav-btn { padding: 12px 20px; font-size: 14px; flex-shrink: 0; }
-
-    .add-row-btn {
-      display: flex;
-      justify-content: center;
-      margin: 12px 16px;
-      padding: 12px;
-      font-size: 14px;
+    .slider-val {
+      min-width: 36px;
+      height: 36px;
+      font-size: 16px;
     }
 
-    .results-summary {
+    .summary-grid {
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      padding: 14px 16px 0 !important;
     }
-    .summary-card { padding: 14px; }
-    .summary-card .num { font-size: 26px; }
-    .summary-card .label { font-size: 12px; }
+    .stat-num { font-size: 26px; }
 
-    .toolbar { justify-content: center; gap: 8px; }
-    .toolbar button { padding: 10px 16px !important; font-size: 13px !important; flex: 1; min-width: 0; }
+    .toolbar-row {
+      flex-direction: column;
+    }
+    .toolbar-row .btn { width: 100%; justify-content: center; }
+
+    .brand-mark { font-size: 13px; }
+    .brand-mark .logo-dot { width: 24px; height: 24px; font-size: 12px; }
   }
 
   @media (max-width: 380px) {
-    .tab-btn { padding: 7px 9px; font-size: 10px; }
-    .results-summary { grid-template-columns: 1fr 1fr; }
-    .app-header h1 { font-size: 17px; }
+    .hero h1 { font-size: 22px; }
+    .step-dot { width: 22px; height: 22px; font-size: 9px; }
+    .step-line { width: 8px; }
+  }
+
+  /* ===== PRINT ===== */
+  @media print {
+    .progress-header, .nav-footer, .add-row-btn, .toolbar-row { display: none !important; }
+    .step-panel { display: block !important; page-break-inside: avoid; }
+    .main-content { padding: 0; max-width: 100%; }
+    body { background: white; }
   }
 </style>
 </head>
 <body>
 
-<div class="app-header">
-  <div class="brand">Decentral Park</div>
-  <h1>Threat Risk Assessment</h1>
-  <p>Individual Digital Asset Threat Modeling Worksheet</p>
-</div>
-
-<div class="tab-bar" id="tabBar">
-  <button class="tab-btn active" data-tab="intro">Overview</button>
-  <button class="tab-btn" data-tab="step-a">A: Assets</button>
-  <button class="tab-btn" data-tab="step-b">B: Threat Actors</button>
-  <button class="tab-btn" data-tab="step-c">C: Risk Rating</button>
-  <button class="tab-btn" data-tab="step-d">D: Vulnerability</button>
-  <button class="tab-btn result-tab" data-tab="threat-results">Threat Results</button>
-  <button class="tab-btn" data-tab="step-e">E: Fix Ease</button>
-  <button class="tab-btn" data-tab="step-f">F: Replace Ease</button>
-  <button class="tab-btn" data-tab="step-g">G: Remove Ease</button>
-  <button class="tab-btn result-tab" data-tab="mitigation-results">Mitigation Results</button>
-</div>
-
-<!-- INTRODUCTION -->
-<div class="tab-panel active" id="panel-intro">
-  <div class="exercise-card">
-    <div class="exercise-title">Getting Started</div>
-    <div class="intro-content">
-      <p>This interactive tool guides you through a structured threat modeling process for your digital assets. By completing each step, you'll identify, prioritize, and plan mitigations for risks to your digital life.</p>
-
-      <h2>How It Works</h2>
-      <ol>
-        <li><strong>Step A — Identify Assets:</strong> List all digital assets you want to protect (accounts, devices, data, etc.).</li>
-        <li><strong>Step B — Identify Threat Actors:</strong> Think about who might want to compromise your assets and why.</li>
-        <li><strong>Step C — Rate Risk:</strong> For each asset, rate how damaging it would be if compromised.</li>
-        <li><strong>Step D — Rate Vulnerability:</strong> For each asset, rate how exposed or vulnerable it currently is.</li>
-        <li><strong>Threat Results:</strong> An auto-calculated priority score combining risk and vulnerability.</li>
-        <li><strong>Step E — Ease of Fixing:</strong> Rate how easy it is to fix/harden each asset (1 = very hard, 10 = very easy).</li>
-        <li><strong>Step F — Ease of Replacing:</strong> Rate how easy it is to replace each asset if compromised.</li>
-        <li><strong>Step G — Ease of Removing:</strong> Rate how easy it is to remove an unnecessary asset entirely.</li>
-        <li><strong>Mitigation Results:</strong> A final summary combining all scores to help you decide the best strategy — fix, replace, or remove.</li>
-      </ol>
-
-      <p>Data is saved automatically in your browser. Nothing is sent to any server.</p>
-
-      <button class="start-btn" onclick="switchTab('step-a')">Begin Assessment &rarr;</button>
+<!-- PROGRESS HEADER -->
+<div class="progress-header">
+  <div class="progress-top">
+    <div class="brand-mark" onclick="goToStep(0)">
+      <div class="logo-dot">DP</div>
+      <span>Decentral Park</span>
     </div>
+    <div class="step-counter" id="stepCounter"></div>
+  </div>
+  <div class="stepper-row" id="stepperRow"></div>
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
   </div>
 </div>
 
-<!-- STEP A: ASSETS -->
-<div class="tab-panel" id="panel-step-a">
-  <div class="exercise-card">
-    <div class="exercise-title">Step A: Identify Your Digital Assets</div>
-    <div class="exercise-instructions">
-      List every digital asset you want to protect. Think broadly: email accounts, social media profiles, cloud storage, devices, financial accounts, medical portals, messaging apps, password managers, cryptocurrency wallets, domain names, and more. Add a brief description of each.
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:35%">Asset Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody id="table-a"></tbody>
-      </table>
-    </div>
-    <div class="mobile-card" id="mobile-a"></div>
-    <button class="add-row-btn" onclick="addAssetRow()">+ Add Asset</button>
-    <div class="nav-row" style="padding:0 16px 16px">
-      <span></span>
-      <button class="nav-btn next" onclick="switchTab('step-b')">Next: Threat Actors &rarr;</button>
-    </div>
-  </div>
-</div>
+<!-- MAIN CONTENT -->
+<div class="main-content">
 
-<!-- STEP B: THREAT ACTORS -->
-<div class="tab-panel" id="panel-step-b">
-  <div class="exercise-card">
-    <div class="exercise-title">Step B: Identify Threat Actors</div>
-    <div class="exercise-instructions">
-      Who might want to compromise your digital assets? Consider: hackers, scammers, stalkers, corporate espionage, nation-states, disgruntled employees, abusive partners, data brokers, or even accidental exposure. Describe their likely motivation and capabilities.
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:35%">Threat Actor</th>
-            <th>Description / Motivation</th>
-          </tr>
-        </thead>
-        <tbody id="table-b"></tbody>
-      </table>
-    </div>
-    <div class="mobile-card" id="mobile-b"></div>
-    <button class="add-row-btn" onclick="addThreatRow()">+ Add Threat Actor</button>
-    <div class="nav-row" style="padding:0 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-a')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('step-c')">Next: Risk Rating &rarr;</button>
+  <!-- 0: INTRO -->
+  <div class="step-panel active" id="panel-0">
+    <div class="hero">
+      <div class="hero-icon">&#x1f6e1;</div>
+      <h1>Threat Risk<br>Assessment</h1>
+      <p>A guided, step-by-step workflow to identify, prioritize, and plan mitigations for your digital asset risks.</p>
+      <div class="steps-preview">
+        <div class="preview-item">
+          <div class="preview-num">A</div>
+          <div class="preview-text"><strong>Identify Assets</strong>List what you want to protect</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">B</div>
+          <div class="preview-text"><strong>Threat Actors</strong>Who might target you</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">C</div>
+          <div class="preview-text"><strong>Risk Rating</strong>Rate potential damage</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">D</div>
+          <div class="preview-text"><strong>Vulnerability</strong>Rate your exposure</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">E</div>
+          <div class="preview-text"><strong>Fix</strong>How easy to harden</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">F</div>
+          <div class="preview-text"><strong>Replace</strong>How easy to swap</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">G</div>
+          <div class="preview-text"><strong>Remove</strong>How easy to eliminate</div>
+        </div>
+        <div class="preview-item">
+          <div class="preview-num">&#x2713;</div>
+          <div class="preview-text"><strong>Results</strong>Prioritized action plan</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="goToStep(1)" style="font-size:17px; padding:16px 40px;">
+        Begin Assessment &#8594;
+      </button>
+      <div class="privacy-note">All data stays in your browser. Nothing is sent to any server.</div>
     </div>
   </div>
-</div>
 
-<!-- STEP C: RISK RATING -->
-<div class="tab-panel" id="panel-step-c">
-  <div class="exercise-card">
-    <div class="exercise-title">Step C: Rate the Risk of Each Asset</div>
-    <div class="exercise-instructions">
-      For each asset you listed in Step A, rate how risky it would be if that asset were compromised or lost. Consider the impact on your privacy, finances, safety, and reputation. Add notes explaining your reasoning.
+  <!-- 1: STEP A — ASSETS -->
+  <div class="step-panel" id="panel-1">
+    <div class="step-header">
+      <div class="step-badge">Step A</div>
+      <h1>Identify Your Digital Assets</h1>
+      <p>List every digital asset you want to protect — email accounts, social media, cloud storage, devices, financial accounts, crypto wallets, messaging apps, and more.</p>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:25%">Asset Name</th>
-            <th style="width:180px">Risk Rating</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="table-c"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-a"></div>
     </div>
-    <div class="mobile-card" id="mobile-c"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-b')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('step-d')">Next: Vulnerability &rarr;</button>
+    <button class="add-row-btn" onclick="addAssetRow()">+ Add another asset</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(0)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(2)">Next: Threat Actors &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- STEP D: VULNERABILITY -->
-<div class="tab-panel" id="panel-step-d">
-  <div class="exercise-card">
-    <div class="exercise-title">Step D: Rate the Vulnerability of Each Asset</div>
-    <div class="exercise-instructions">
-      For each asset, rate how vulnerable or exposed it currently is to attack. Consider: Is the password strong and unique? Is two-factor authentication enabled? Is the software up to date? Is data encrypted? Could someone access it easily?
+  <!-- 2: STEP B — THREAT ACTORS -->
+  <div class="step-panel" id="panel-2">
+    <div class="step-header">
+      <div class="step-badge">Step B</div>
+      <h1>Identify Threat Actors</h1>
+      <p>Who might want to compromise your assets? Consider hackers, scammers, stalkers, nation-states, data brokers, or even accidental exposure.</p>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:25%">Asset Name</th>
-            <th style="width:200px">Vulnerability Rating</th>
-            <th>Notes</th>
-          </tr>
-        </thead>
-        <tbody id="table-d"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-b"></div>
     </div>
-    <div class="mobile-card" id="mobile-d"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-c')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('threat-results')">Next: Threat Results &rarr;</button>
+    <button class="add-row-btn" onclick="addThreatRow()">+ Add another threat actor</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(1)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Next: Risk Rating &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- THREAT RESULTS -->
-<div class="tab-panel" id="panel-threat-results">
-  <div class="exercise-card">
-    <div class="exercise-title">Threat Assessment Results</div>
-    <div class="exercise-instructions">
-      This page auto-calculates a priority score for each asset based on your risk and vulnerability ratings from Steps C and D. Higher scores indicate assets that need the most urgent attention. Use the Notes column (1–10 scale) to add your own priority override if desired.
+  <!-- 3: STEP C — RISK RATING -->
+  <div class="step-panel" id="panel-3">
+    <div class="step-header">
+      <div class="step-badge">Step C</div>
+      <h1>Rate the Risk</h1>
+      <p>For each asset, rate how damaging it would be if compromised. Consider impacts on privacy, finances, safety, and reputation.</p>
     </div>
-    <div id="threat-summary" class="results-summary" style="padding:20px 16px 0"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:25%">Asset Name</th>
-            <th style="width:100px">Priority Score</th>
-            <th style="min-width:180px">Notes (1–10)</th>
-          </tr>
-        </thead>
-        <tbody id="table-threat"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-c"></div>
     </div>
-    <div class="mobile-card" id="mobile-threat"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-d')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('step-e')">Next: Fix Ease &rarr;</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(2)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">Next: Vulnerability &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- STEP E: FIX EASE -->
-<div class="tab-panel" id="panel-step-e">
-  <div class="exercise-card">
-    <div class="exercise-title">Step E: Rate Ease of Fixing</div>
-    <div class="exercise-instructions">
-      For each asset, rate how easy it would be to fix or harden it against threats. Fixing means improving security without replacing the asset: enabling two-factor auth, changing passwords, encrypting data, updating software, adjusting privacy settings, reducing stored sensitive data, etc. Rate on a 1–10 scale where 10 = very easy to fix and 1 = very difficult.
+  <!-- 4: STEP D — VULNERABILITY -->
+  <div class="step-panel" id="panel-4">
+    <div class="step-header">
+      <div class="step-badge">Step D</div>
+      <h1>Rate the Vulnerability</h1>
+      <p>How exposed is each asset right now? Consider password strength, 2FA status, software updates, encryption, and access controls.</p>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:25%">Asset Name</th>
-            <th style="width:100px">Priority</th>
-            <th style="min-width:200px">Ease of Fixing (1–10)</th>
-          </tr>
-        </thead>
-        <tbody id="table-e"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-d"></div>
     </div>
-    <div class="mobile-card" id="mobile-e"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('threat-results')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('step-f')">Next: Replace Ease &rarr;</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(3)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(5)">View Threat Results &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- STEP F: REPLACE EASE -->
-<div class="tab-panel" id="panel-step-f">
-  <div class="exercise-card">
-    <div class="exercise-title">Step F: Rate Ease of Replacing</div>
-    <div class="exercise-instructions">
-      For each asset, rate how easy it would be to replace it entirely with a more secure alternative. For example: switching email providers, moving to encrypted messaging, using a different cloud service, or getting a new device. Rate 1–10 where 10 = very easy to replace, 1 = very difficult.
+  <!-- 5: THREAT RESULTS -->
+  <div class="step-panel" id="panel-5">
+    <div class="step-header">
+      <div class="step-badge" style="background:#fef2f2; color:#dc2626;">Results</div>
+      <h1>Threat Priority</h1>
+      <p>Auto-calculated priority based on your risk and vulnerability ratings. Higher scores need the most urgent attention.</p>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:22%">Asset Name</th>
-            <th style="width:80px">Priority</th>
-            <th style="width:60px">Fix</th>
-            <th style="min-width:200px">Ease of Replacing (1–10)</th>
-          </tr>
-        </thead>
-        <tbody id="table-f"></tbody>
-      </table>
+    <div id="threat-summary"></div>
+    <div class="card">
+      <div id="items-threat"></div>
     </div>
-    <div class="mobile-card" id="mobile-f"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-e')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('step-g')">Next: Remove Ease &rarr;</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(4)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(6)">Next: Ease of Fix &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- STEP G: REMOVE EASE -->
-<div class="tab-panel" id="panel-step-g">
-  <div class="exercise-card">
-    <div class="exercise-title">Step G: Rate Ease of Removing</div>
-    <div class="exercise-instructions">
-      For each asset, rate how easy it would be to remove or decommission it entirely. Sometimes the best mitigation is to eliminate unnecessary digital assets altogether — delete unused accounts, remove apps you don't need, stop using insecure services. Rate 1–10 where 10 = very easy to remove, 1 = very difficult or impossible.
+  <!-- 6: STEP E — FIX -->
+  <div class="step-panel" id="panel-6">
+    <div class="step-header">
+      <div class="step-badge">Step E</div>
+      <h1>Ease of Fixing</h1>
+      <p>Rate how easy it is to harden each asset — enabling 2FA, changing passwords, encrypting data, updating software. 1 = very hard, 10 = very easy.</p>
     </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:20%">Asset Name</th>
-            <th style="width:80px">Priority</th>
-            <th style="width:50px">Fix</th>
-            <th style="width:70px">Replace</th>
-            <th style="min-width:200px">Ease of Removing (1–10)</th>
-          </tr>
-        </thead>
-        <tbody id="table-g"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-e"></div>
     </div>
-    <div class="mobile-card" id="mobile-g"></div>
-    <div class="nav-row" style="padding:12px 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-f')">&larr; Previous</button>
-      <button class="nav-btn next" onclick="switchTab('mitigation-results')">View Mitigation Results &rarr;</button>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(5)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(7)">Next: Ease of Replace &#8594;</button>
     </div>
   </div>
-</div>
 
-<!-- MITIGATION RESULTS -->
-<div class="tab-panel" id="panel-mitigation-results">
-  <div class="exercise-card">
-    <div class="exercise-title">Mitigation Strategy Results</div>
-    <div class="exercise-instructions">
-      This final view brings together all your assessments. For each asset, compare the ease of fixing, replacing, and removing. The recommended strategy is usually the option with the highest ease score — the least disruptive path to reducing risk. Use the Notes column to record your chosen action plan.
+  <!-- 7: STEP F — REPLACE -->
+  <div class="step-panel" id="panel-7">
+    <div class="step-header">
+      <div class="step-badge">Step F</div>
+      <h1>Ease of Replacing</h1>
+      <p>Rate how easy it is to replace each asset with a more secure alternative — switching providers, new devices, different platforms. 1 = very hard, 10 = very easy.</p>
     </div>
-    <div id="mitigation-summary" class="results-summary" style="padding:20px 16px 0"></div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th style="width:40px">#</th>
-            <th style="width:18%">Asset Name</th>
-            <th style="width:80px">Priority</th>
-            <th style="width:50px">Fix</th>
-            <th style="width:70px">Replace</th>
-            <th style="width:70px">Remove</th>
-            <th>Notes / Action Plan</th>
-          </tr>
-        </thead>
-        <tbody id="table-mitigation"></tbody>
-      </table>
+    <div class="card">
+      <div id="items-f"></div>
     </div>
-    <div class="mobile-card" id="mobile-mitigation"></div>
-    <div class="toolbar" style="border-top:1px solid var(--border); border-bottom:none; justify-content:center; padding:16px;">
-      <button onclick="exportCSV()" style="padding:10px 24px; font-size:14px;">Export as CSV</button>
-      <button onclick="printResults()" style="padding:10px 24px; font-size:14px;">Print Results</button>
-      <button onclick="clearAll()" style="padding:10px 24px; font-size:14px; color:var(--danger);">Reset All Data</button>
-    </div>
-    <div class="nav-row" style="padding:0 16px 16px">
-      <button class="nav-btn prev" onclick="switchTab('step-g')">&larr; Previous</button>
-      <span></span>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(6)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(8)">Next: Ease of Remove &#8594;</button>
     </div>
   </div>
+
+  <!-- 8: STEP G — REMOVE -->
+  <div class="step-panel" id="panel-8">
+    <div class="step-header">
+      <div class="step-badge">Step G</div>
+      <h1>Ease of Removing</h1>
+      <p>Rate how easy it is to eliminate unnecessary assets altogether — deleting unused accounts, removing apps, stopping insecure services. 1 = very hard, 10 = very easy.</p>
+    </div>
+    <div class="card">
+      <div id="items-g"></div>
+    </div>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(7)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(9)">View Final Results &#8594;</button>
+    </div>
+  </div>
+
+  <!-- 9: MITIGATION RESULTS -->
+  <div class="step-panel" id="panel-9">
+    <div class="step-header">
+      <div class="step-badge" style="background:#f0fdf4; color:#16a34a;">Final Results</div>
+      <h1>Mitigation Strategy</h1>
+      <p>Your complete assessment. Compare fix, replace, and remove scores to decide the best strategy for each asset.</p>
+    </div>
+    <div id="mitigation-summary"></div>
+    <div class="card">
+      <div id="items-mitigation"></div>
+    </div>
+    <div class="toolbar-row">
+      <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-secondary" onclick="printResults()">Print Results</button>
+      <button class="btn btn-danger" onclick="clearAll()">Reset All Data</button>
+    </div>
+    <div class="nav-footer">
+      <button class="btn btn-ghost" onclick="goToStep(8)">&#8592; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(0)">Start Over</button>
+    </div>
+  </div>
+
 </div>
 
 <script>
 // ========== STATE ==========
 const STORAGE_KEY = 'threat_risk_tool_data';
-const DEFAULT_ROW_COUNT = 15;
+const DEFAULT_ROW_COUNT = 10;
+const TOTAL_STEPS = 10; // 0=intro, 1-8=steps, 9=final
 
+const STEP_META = [
+  { label: 'Start', short: '&#x2302;' },
+  { label: 'Assets', short: 'A' },
+  { label: 'Threats', short: 'B' },
+  { label: 'Risk', short: 'C' },
+  { label: 'Vuln', short: 'D' },
+  { label: 'Results', short: '!' },
+  { label: 'Fix', short: 'E' },
+  { label: 'Replace', short: 'F' },
+  { label: 'Remove', short: 'G' },
+  { label: 'Final', short: '&#x2713;' }
+];
+
+let currentStep = 0;
 let state = loadState();
 
 function defaultState() {
   return {
     assets: Array.from({length: DEFAULT_ROW_COUNT}, () => ({name: '', desc: ''})),
-    threats: Array.from({length: 8}, () => ({name: '', desc: ''})),
+    threats: Array.from({length: 6}, () => ({name: '', desc: ''})),
     riskRatings: {},
     vulnRatings: {},
     threatNotes: {},
@@ -856,21 +1066,60 @@ function getFilledAssets() {
   return state.assets.map((a, i) => ({...a, idx: i})).filter(a => a.name.trim() !== '');
 }
 
-// ========== TABS ==========
-function switchTab(id) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const tabBtn = document.querySelector(`[data-tab="${id}"]`);
-  tabBtn.classList.add('active');
-  tabBtn.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
-  document.getElementById(`panel-${id}`).classList.add('active');
-  renderAll();
-  window.scrollTo({top: 0});
+// ========== STEPPER ==========
+function buildStepper() {
+  const row = document.getElementById('stepperRow');
+  let html = '';
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const isResult = i === 5 || i === 9;
+    html += `<div class="step-dot-wrap" onclick="goToStep(${i})">`;
+    html += `<div class="step-dot${isResult ? ' result-dot' : ''}" id="dot-${i}">${STEP_META[i].short}</div>`;
+    html += `</div>`;
+    if (i < TOTAL_STEPS - 1) {
+      html += `<div class="step-line" id="line-${i}"></div>`;
+    }
+  }
+  row.innerHTML = html;
 }
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-});
+function updateStepper() {
+  for (let i = 0; i < TOTAL_STEPS; i++) {
+    const dot = document.getElementById(`dot-${i}`);
+    dot.classList.remove('active', 'completed');
+    if (i === currentStep) dot.classList.add('active');
+    else if (i < currentStep) dot.classList.add('completed');
+
+    if (i < TOTAL_STEPS - 1) {
+      const line = document.getElementById(`line-${i}`);
+      line.classList.toggle('filled', i < currentStep);
+    }
+  }
+
+  const pct = currentStep === 0 ? 0 : (currentStep / (TOTAL_STEPS - 1)) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const counter = document.getElementById('stepCounter');
+  if (currentStep === 0) {
+    counter.textContent = '';
+  } else {
+    counter.innerHTML = `Step <strong>${currentStep}</strong> of ${TOTAL_STEPS - 1}`;
+  }
+}
+
+// ========== NAVIGATION ==========
+function goToStep(n) {
+  document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+  currentStep = n;
+  const panel = document.getElementById(`panel-${n}`);
+  panel.classList.add('active');
+  updateStepper();
+  renderCurrentStep();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+
+  // scroll active dot into view
+  const dot = document.getElementById(`dot-${n}`);
+  if (dot) dot.scrollIntoView({behavior:'smooth', block:'nearest', inline:'center'});
+}
 
 // ========== SCORING ==========
 function riskScore(r) { return r==='Very Risky'?3:r==='Risky'?2:r==='Moderately Risky'?1:0; }
@@ -882,32 +1131,18 @@ function calcPriority(i) {
 }
 
 function priorityBadge(score) {
-  if (score === null || score === undefined) return '<span class="auto-cell empty">\u2014</span>';
+  if (score === null || score === undefined) return '<span class="auto-val empty">&mdash;</span>';
   const cls = score >= 5 ? 'priority-high' : score >= 3 ? 'priority-med' : 'priority-low';
   return `<span class="priority-badge ${cls}">${score}</span>`;
 }
 
-function emptyMsg(text) {
-  return `<div class="m-empty">${text}</div>`;
-}
-
-// ========== BIND HELPERS ==========
-function bindInputs(container, handler) {
-  container.querySelectorAll('input').forEach(inp => inp.addEventListener('input', handler));
-}
-function bindSelects(container, handler) {
-  container.querySelectorAll('select').forEach(sel => sel.addEventListener('change', handler));
-}
-function bindNumbers(container, handler) {
-  container.querySelectorAll('input[type="number"]').forEach(inp => inp.addEventListener('input', handler));
-}
-
+// ========== SLIDER HELPERS ==========
 function sliderHtml(value, dataAttr) {
   const hasVal = value !== '' && value !== undefined && value !== null;
   const num = hasVal ? +value : 5;
   const cls = hasVal ? '' : ' unset';
   const valCls = hasVal ? '' : ' empty';
-  const display = hasVal ? num : '\u2014';
+  const display = hasVal ? num : '&mdash;';
   return `<div class="slider-wrap">
     <input type="range" min="1" max="10" value="${num}" ${dataAttr} class="${cls}">
     <span class="slider-val${valCls}">${display}</span>
@@ -927,190 +1162,153 @@ function bindSliders(container, handler) {
   });
 }
 
+function bindInputs(container, handler) {
+  container.querySelectorAll('input[type="text"]').forEach(inp => inp.addEventListener('input', handler));
+}
+function bindSelects(container, handler) {
+  container.querySelectorAll('select').forEach(sel => sel.addEventListener('change', handler));
+}
+
 // ========== RENDER: STEP A ==========
-function renderTableA() {
-  const tbody = document.getElementById('table-a');
-  const mob = document.getElementById('mobile-a');
-
-  tbody.innerHTML = state.assets.map((a, i) => `
-    <tr>
-      <td class="row-num">${i+1}</td>
-      <td><input type="text" value="${esc(a.name)}" data-i="${i}" data-field="name" placeholder="e.g., Gmail account"></td>
-      <td><input type="text" value="${esc(a.desc)}" data-i="${i}" data-field="desc" placeholder="Primary email for personal and work"></td>
-    </tr>`).join('');
-
-  mob.innerHTML = state.assets.map((a, i) => `
-    <div class="m-card">
-      <div class="m-card-num">Asset ${i+1}</div>
-      <div class="m-card-field">
-        <div class="m-card-label">Name</div>
+function renderStepA() {
+  const el = document.getElementById('items-a');
+  el.innerHTML = state.assets.map((a, i) => `
+    <div class="item-row">
+      <div class="item-num">Asset ${i + 1}</div>
+      <div class="field-group">
+        <div class="field-label">Name</div>
         <input type="text" value="${esc(a.name)}" data-i="${i}" data-field="name" placeholder="e.g., Gmail account">
       </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Description</div>
+      <div class="field-group">
+        <div class="field-label">Description</div>
         <input type="text" value="${esc(a.desc)}" data-i="${i}" data-field="desc" placeholder="Primary email for personal and work">
       </div>
     </div>`).join('');
 
-  const handler = e => {
+  bindInputs(el, e => {
     state.assets[+e.target.dataset.i][e.target.dataset.field] = e.target.value;
     saveState();
-  };
-  bindInputs(tbody, handler);
-  bindInputs(mob, handler);
+  });
 }
 
 // ========== RENDER: STEP B ==========
-function renderTableB() {
-  const tbody = document.getElementById('table-b');
-  const mob = document.getElementById('mobile-b');
-
-  tbody.innerHTML = state.threats.map((t, i) => `
-    <tr>
-      <td class="row-num">${i+1}</td>
-      <td><input type="text" value="${esc(t.name)}" data-i="${i}" data-field="name" placeholder="e.g., Phishing scammer"></td>
-      <td><input type="text" value="${esc(t.desc)}" data-i="${i}" data-field="desc" placeholder="Sends fake login pages via email"></td>
-    </tr>`).join('');
-
-  mob.innerHTML = state.threats.map((t, i) => `
-    <div class="m-card">
-      <div class="m-card-num">Actor ${i+1}</div>
-      <div class="m-card-field">
-        <div class="m-card-label">Threat Actor</div>
+function renderStepB() {
+  const el = document.getElementById('items-b');
+  el.innerHTML = state.threats.map((t, i) => `
+    <div class="item-row">
+      <div class="item-num">Threat Actor ${i + 1}</div>
+      <div class="field-group">
+        <div class="field-label">Name</div>
         <input type="text" value="${esc(t.name)}" data-i="${i}" data-field="name" placeholder="e.g., Phishing scammer">
       </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Description / Motivation</div>
+      <div class="field-group">
+        <div class="field-label">Description / Motivation</div>
         <input type="text" value="${esc(t.desc)}" data-i="${i}" data-field="desc" placeholder="Sends fake login pages via email">
       </div>
     </div>`).join('');
 
-  const handler = e => {
+  bindInputs(el, e => {
     state.threats[+e.target.dataset.i][e.target.dataset.field] = e.target.value;
     saveState();
-  };
-  bindInputs(tbody, handler);
-  bindInputs(mob, handler);
+  });
 }
 
 // ========== RENDER: STEP C ==========
-function renderTableC() {
-  const tbody = document.getElementById('table-c');
-  const mob = document.getElementById('mobile-c');
+function renderStepC() {
+  const el = document.getElementById('items-c');
   const filled = getFilledAssets();
-  const none = 'No assets listed yet. Go to Step A to add assets.';
+
   if (!filled.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
-    mob.innerHTML = emptyMsg(none);
+    el.innerHTML = '<div class="empty-state">No assets listed yet. Go back to Step A to add assets.</div>';
     return;
   }
-  const opts = (cur) => ['Very Risky','Risky','Moderately Risky'].map(v =>
+
+  const opts = cur => ['Very Risky','Risky','Moderately Risky'].map(v =>
     `<option value="${v}" ${cur===v?'selected':''}>${v}</option>`).join('');
 
-  tbody.innerHTML = filled.map(a => {
+  el.innerHTML = filled.map(a => {
     const r = state.riskRatings[a.idx] || {};
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td><select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(r.rating)}</select></td>
-      <td><input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" placeholder="Why this rating?"></td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const r = state.riskRatings[a.idx] || {};
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-field">
-        <div class="m-card-label">Risk Rating</div>
-        <select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(r.rating)}</select>
-      </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Notes</div>
-        <input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" placeholder="Why this rating?">
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)}</div>
+      <div class="rating-fields">
+        <div class="field-group">
+          <div class="field-label">Risk Rating</div>
+          <select data-i="${a.idx}" data-type="rating"><option value="">&mdash; Select &mdash;</option>${opts(r.rating)}</select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Notes</div>
+          <input type="text" value="${esc(r.notes||'')}" data-i="${a.idx}" data-type="notes" placeholder="Why this rating?">
+        </div>
       </div>
     </div>`;
   }).join('');
 
-  const selHandler = e => {
+  bindSelects(el, e => {
     const i = e.target.dataset.i;
     if (!state.riskRatings[i]) state.riskRatings[i] = {};
     state.riskRatings[i].rating = e.target.value;
     saveState();
-  };
-  const inpHandler = e => {
+  });
+  bindInputs(el, e => {
     const i = e.target.dataset.i;
     if (!state.riskRatings[i]) state.riskRatings[i] = {};
     state.riskRatings[i].notes = e.target.value;
     saveState();
-  };
-  [tbody, mob].forEach(el => { bindSelects(el, selHandler); bindInputs(el, inpHandler); });
+  });
 }
 
 // ========== RENDER: STEP D ==========
-function renderTableD() {
-  const tbody = document.getElementById('table-d');
-  const mob = document.getElementById('mobile-d');
+function renderStepD() {
+  const el = document.getElementById('items-d');
   const filled = getFilledAssets();
-  const none = 'No assets listed yet. Go to Step A to add assets.';
+
   if (!filled.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
-    mob.innerHTML = emptyMsg(none);
+    el.innerHTML = '<div class="empty-state">No assets listed yet. Go back to Step A to add assets.</div>';
     return;
   }
-  const opts = (cur) => ['Very Vulnerable','Vulnerable','Moderately Vulnerable'].map(v =>
+
+  const opts = cur => ['Very Vulnerable','Vulnerable','Moderately Vulnerable'].map(v =>
     `<option value="${v}" ${cur===v?'selected':''}>${v}</option>`).join('');
 
-  tbody.innerHTML = filled.map(a => {
+  el.innerHTML = filled.map(a => {
     const v = state.vulnRatings[a.idx] || {};
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td><select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(v.rating)}</select></td>
-      <td><input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" placeholder="What makes it vulnerable?"></td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const v = state.vulnRatings[a.idx] || {};
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-field">
-        <div class="m-card-label">Vulnerability Rating</div>
-        <select data-i="${a.idx}"><option value="">\u2014 Select \u2014</option>${opts(v.rating)}</select>
-      </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Notes</div>
-        <input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" placeholder="What makes it vulnerable?">
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)}</div>
+      <div class="rating-fields">
+        <div class="field-group">
+          <div class="field-label">Vulnerability</div>
+          <select data-i="${a.idx}" data-type="rating"><option value="">&mdash; Select &mdash;</option>${opts(v.rating)}</select>
+        </div>
+        <div class="field-group">
+          <div class="field-label">Notes</div>
+          <input type="text" value="${esc(v.notes||'')}" data-i="${a.idx}" data-type="notes" placeholder="What makes it vulnerable?">
+        </div>
       </div>
     </div>`;
   }).join('');
 
-  const selHandler = e => {
+  bindSelects(el, e => {
     const i = e.target.dataset.i;
     if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
     state.vulnRatings[i].rating = e.target.value;
     saveState();
-  };
-  const inpHandler = e => {
+  });
+  bindInputs(el, e => {
     const i = e.target.dataset.i;
     if (!state.vulnRatings[i]) state.vulnRatings[i] = {};
     state.vulnRatings[i].notes = e.target.value;
     saveState();
-  };
-  [tbody, mob].forEach(el => { bindSelects(el, selHandler); bindInputs(el, inpHandler); });
+  });
 }
 
 // ========== RENDER: THREAT RESULTS ==========
 function renderThreatResults() {
-  const tbody = document.getElementById('table-threat');
-  const mob = document.getElementById('mobile-threat');
-  const filled = getFilledAssets();
+  const el = document.getElementById('items-threat');
   const sumEl = document.getElementById('threat-summary');
+  const filled = getFilledAssets();
 
   if (!filled.length) {
-    tbody.innerHTML = '<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">No assets to score yet.</td></tr>';
-    mob.innerHTML = emptyMsg('No assets to score yet.');
+    el.innerHTML = '<div class="empty-state">No assets to score yet.</div>';
     sumEl.innerHTML = '';
     return;
   }
@@ -1119,215 +1317,143 @@ function renderThreatResults() {
   const highCount = scores.filter(s => s.priority >= 5).length;
   const medCount = scores.filter(s => s.priority >= 3 && s.priority < 5).length;
   const lowCount = scores.filter(s => s.priority > 0 && s.priority < 3).length;
-  sumEl.innerHTML = `
-    <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Assets Tracked</div></div>
-    <div class="summary-card"><div class="num" style="color:var(--danger)">${highCount}</div><div class="label">High Priority</div></div>
-    <div class="summary-card"><div class="num" style="color:var(--warning)">${medCount}</div><div class="label">Medium Priority</div></div>
-    <div class="summary-card"><div class="num" style="color:var(--success)">${lowCount}</div><div class="label">Lower Priority</div></div>`;
 
-  tbody.innerHTML = filled.map(a => {
+  sumEl.innerHTML = `<div class="summary-grid">
+    <div class="stat-card"><div class="stat-num">${filled.length}</div><div class="stat-label">Assets Tracked</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--danger)">${highCount}</div><div class="stat-label">High Priority</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--warning)">${medCount}</div><div class="stat-label">Medium Priority</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--accent)">${lowCount}</div><div class="stat-label">Lower Priority</div></div>
+  </div>`;
+
+  el.innerHTML = filled.map(a => {
     const p = calcPriority(a.idx);
     const n = state.threatNotes[a.idx] || '';
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td class="score-cell">${priorityBadge(p)}</td>
-      <td>${sliderHtml(n, `data-i="${a.idx}"`)}</td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const n = state.threatNotes[a.idx] || '';
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-row">
-        <div class="m-card-field">
-          <div class="m-card-label">Priority</div>
-          <div class="m-card-value">${priorityBadge(p)}</div>
-        </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Notes (1\u201310)</div>
-          ${sliderHtml(n, `data-i="${a.idx}"`)}
-        </div>
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="field-group">
+        <div class="field-label">Your Priority Override (1&ndash;10)</div>
+        ${sliderHtml(n, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
-  const handler = e => {
+  bindSliders(el, e => {
     state.threatNotes[e.target.dataset.i] = e.target.value;
     saveState();
-  };
-  bindSliders(tbody, handler);
-  bindSliders(mob, handler);
+  });
 }
 
 // ========== RENDER: STEP E ==========
-function renderTableE() {
-  const tbody = document.getElementById('table-e');
-  const mob = document.getElementById('mobile-e');
+function renderStepE() {
+  const el = document.getElementById('items-e');
   const filled = getFilledAssets();
-  const none = 'No assets to evaluate.';
+
   if (!filled.length) {
-    tbody.innerHTML = `<tr><td colspan="4" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
-    mob.innerHTML = emptyMsg(none);
+    el.innerHTML = '<div class="empty-state">No assets to evaluate.</div>';
     return;
   }
 
-  tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx] || '';
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td class="score-cell">${priorityBadge(p)}</td>
-      <td>${sliderHtml(fix, `data-i="${a.idx}"`)}</td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx] || '';
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-row">
-        <div class="m-card-field">
-          <div class="m-card-label">Priority</div>
-          <div class="m-card-value">${priorityBadge(p)}</div>
-        </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Ease of Fixing (1\u201310)</div>
-          ${sliderHtml(fix, `data-i="${a.idx}"`)}
-        </div>
+  el.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="field-group">
+        <div class="field-label">Ease of Fixing (1&ndash;10)</div>
+        ${sliderHtml(fix, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
-  const handler = e => {
+  bindSliders(el, e => {
     state.fixScores[e.target.dataset.i] = e.target.value;
     saveState();
-  };
-  bindSliders(tbody, handler);
-  bindSliders(mob, handler);
+  });
 }
 
 // ========== RENDER: STEP F ==========
-function renderTableF() {
-  const tbody = document.getElementById('table-f');
-  const mob = document.getElementById('mobile-f');
+function renderStepF() {
+  const el = document.getElementById('items-f');
   const filled = getFilledAssets();
-  const none = 'No assets to evaluate.';
+
   if (!filled.length) {
-    tbody.innerHTML = `<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
-    mob.innerHTML = emptyMsg(none);
+    el.innerHTML = '<div class="empty-state">No assets to evaluate.</div>';
     return;
   }
 
-  tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx]||''; const rep = state.replaceScores[a.idx]||'';
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
-      <td>${sliderHtml(rep, `data-i="${a.idx}"`)}</td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix = state.fixScores[a.idx]||''; const rep = state.replaceScores[a.idx]||'';
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-row">
-        <div class="m-card-field">
-          <div class="m-card-label">Priority</div>
-          <div class="m-card-value">${priorityBadge(p)}</div>
+  el.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="rating-fields">
+        <div class="field-group">
+          <div class="field-label">Fix Score</div>
+          <div class="auto-val${fix?'':' empty'}">${fix||'&mdash;'}</div>
         </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Fix Score</div>
-          <div class="m-card-value">${fix||'\u2014'}</div>
+        <div class="field-group" style="flex:2">
+          <div class="field-label">Ease of Replacing (1&ndash;10)</div>
+          ${sliderHtml(rep, `data-i="${a.idx}"`)}
         </div>
-      </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Ease of Replacing (1\u201310)</div>
-        ${sliderHtml(rep, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
-  const handler = e => {
+  bindSliders(el, e => {
     state.replaceScores[e.target.dataset.i] = e.target.value;
     saveState();
-  };
-  bindSliders(tbody, handler);
-  bindSliders(mob, handler);
+  });
 }
 
 // ========== RENDER: STEP G ==========
-function renderTableG() {
-  const tbody = document.getElementById('table-g');
-  const mob = document.getElementById('mobile-g');
+function renderStepG() {
+  const el = document.getElementById('items-g');
   const filled = getFilledAssets();
-  const none = 'No assets to evaluate.';
+
   if (!filled.length) {
-    tbody.innerHTML = `<tr><td colspan="6" style="padding:24px;text-align:center;color:var(--text-muted)">${none}</td></tr>`;
-    mob.innerHTML = emptyMsg(none);
+    el.innerHTML = '<div class="empty-state">No assets to evaluate.</div>';
     return;
   }
 
-  tbody.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
-      <td class="auto-cell ${rep?'':'empty'}">${rep||'\u2014'}</td>
-      <td>${sliderHtml(rem, `data-i="${a.idx}"`)}</td>
-    </tr>`;
-  }).join('');
-
-  mob.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-row">
-        <div class="m-card-field">
-          <div class="m-card-label">Priority</div>
-          <div class="m-card-value">${priorityBadge(p)}</div>
+  el.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx] || '';
+    const rep = state.replaceScores[a.idx] || '';
+    const rem = state.removeScores[a.idx] || '';
+    return `<div class="rating-card">
+      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="rating-fields">
+        <div class="field-group">
+          <div class="field-label">Fix</div>
+          <div class="auto-val${fix?'':' empty'}">${fix||'&mdash;'}</div>
         </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Fix</div>
-          <div class="m-card-value">${fix||'\u2014'}</div>
+        <div class="field-group">
+          <div class="field-label">Replace</div>
+          <div class="auto-val${rep?'':' empty'}">${rep||'&mdash;'}</div>
         </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Replace</div>
-          <div class="m-card-value">${rep||'\u2014'}</div>
+        <div class="field-group" style="flex:2">
+          <div class="field-label">Ease of Removing (1&ndash;10)</div>
+          ${sliderHtml(rem, `data-i="${a.idx}"`)}
         </div>
-      </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Ease of Removing (1\u201310)</div>
-        ${sliderHtml(rem, `data-i="${a.idx}"`)}
       </div>
     </div>`;
   }).join('');
 
-  const handler = e => {
+  bindSliders(el, e => {
     state.removeScores[e.target.dataset.i] = e.target.value;
     saveState();
-  };
-  bindSliders(tbody, handler);
-  bindSliders(mob, handler);
+  });
 }
 
 // ========== RENDER: MITIGATION RESULTS ==========
 function renderMitigationResults() {
-  const tbody = document.getElementById('table-mitigation');
-  const mob = document.getElementById('mobile-mitigation');
-  const filled = getFilledAssets();
+  const el = document.getElementById('items-mitigation');
   const sumEl = document.getElementById('mitigation-summary');
+  const filled = getFilledAssets();
 
   if (!filled.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="padding:24px;text-align:center;color:var(--text-muted)">No assets to summarize.</td></tr>';
-    mob.innerHTML = emptyMsg('No assets to summarize.');
+    el.innerHTML = '<div class="empty-state">No assets to summarize.</div>';
     sumEl.innerHTML = '';
     return;
   }
@@ -1339,87 +1465,84 @@ function renderMitigationResults() {
     if(mx>0){if(mx===f)fixBest++;else if(mx===r)repBest++;else remBest++;}
   });
 
-  sumEl.innerHTML = `
-    <div class="summary-card"><div class="num">${filled.length}</div><div class="label">Total Assets</div></div>
-    <div class="summary-card"><div class="num" style="color:#16a34a">${fixBest}</div><div class="label">Best to Fix</div></div>
-    <div class="summary-card"><div class="num" style="color:#7c3aed">${repBest}</div><div class="label">Best to Replace</div></div>
-    <div class="summary-card"><div class="num" style="color:#d97706">${remBest}</div><div class="label">Best to Remove</div></div>`;
+  sumEl.innerHTML = `<div class="summary-grid">
+    <div class="stat-card"><div class="stat-num">${filled.length}</div><div class="stat-label">Total Assets</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#16a34a">${fixBest}</div><div class="stat-label">Best to Fix</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#7c3aed">${repBest}</div><div class="stat-label">Best to Replace</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#d97706">${remBest}</div><div class="stat-label">Best to Remove</div></div>
+  </div>`;
 
-  tbody.innerHTML = filled.map(a => {
-    const p=calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||'';
-    const rem=state.removeScores[a.idx]||''; const notes=state.mitigationNotes[a.idx]||'';
-    return `<tr>
-      <td class="row-num">${a.idx+1}</td>
-      <td class="auto-cell">${esc(a.name)}</td>
-      <td class="score-cell">${priorityBadge(p)}</td>
-      <td class="auto-cell ${fix?'':'empty'}">${fix||'\u2014'}</td>
-      <td class="auto-cell ${rep?'':'empty'}">${rep||'\u2014'}</td>
-      <td class="auto-cell ${rem?'':'empty'}">${rem||'\u2014'}</td>
-      <td><input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="Your action plan..."></td>
-    </tr>`;
-  }).join('');
+  el.innerHTML = filled.map(a => {
+    const p = calcPriority(a.idx);
+    const fix = state.fixScores[a.idx]||'';
+    const rep = state.replaceScores[a.idx]||'';
+    const rem = state.removeScores[a.idx]||'';
+    const notes = state.mitigationNotes[a.idx]||'';
+    const f=+fix||0, r=+rep||0, m=+rem||0;
+    const mx = Math.max(f,r,m);
+    const bestLabel = mx===0 ? '' : mx===f ? 'Fix' : mx===r ? 'Replace' : 'Remove';
 
-  mob.innerHTML = filled.map(a => {
-    const p=calcPriority(a.idx); const fix=state.fixScores[a.idx]||''; const rep=state.replaceScores[a.idx]||'';
-    const rem=state.removeScores[a.idx]||''; const notes=state.mitigationNotes[a.idx]||'';
-    return `<div class="m-card">
-      <div class="m-card-num">${esc(a.name)}</div>
-      <div class="m-card-row">
-        <div class="m-card-field">
-          <div class="m-card-label">Priority</div>
-          <div class="m-card-value">${priorityBadge(p)}</div>
-        </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Fix</div>
-          <div class="m-card-value">${fix||'\u2014'}</div>
-        </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Replace</div>
-          <div class="m-card-value">${rep||'\u2014'}</div>
-        </div>
-        <div class="m-card-field">
-          <div class="m-card-label">Remove</div>
-          <div class="m-card-value">${rem||'\u2014'}</div>
-        </div>
+    return `<div class="mit-card">
+      <div class="mit-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="mit-scores">
+        <span class="score-chip${mx>0&&mx===f?' best':''}">Fix: ${fix||'&mdash;'}</span>
+        <span class="score-chip${mx>0&&mx===r?' best':''}">Replace: ${rep||'&mdash;'}</span>
+        <span class="score-chip${mx>0&&mx===m?' best':''}">Remove: ${rem||'&mdash;'}</span>
+        ${bestLabel ? `<span class="score-chip best">&#8594; ${bestLabel}</span>` : ''}
       </div>
-      <div class="m-card-field">
-        <div class="m-card-label">Action Plan</div>
-        <input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="Your action plan...">
+      <div class="mit-action">
+        <div class="field-label">Action Plan</div>
+        <input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="What will you do about this asset?">
       </div>
     </div>`;
   }).join('');
 
-  const handler = e => { state.mitigationNotes[e.target.dataset.i] = e.target.value; saveState(); };
-  bindInputs(tbody, handler);
-  bindInputs(mob, handler);
+  bindInputs(el, e => {
+    state.mitigationNotes[e.target.dataset.i] = e.target.value;
+    saveState();
+  });
 }
 
-// ========== RENDER ALL ==========
-function renderAll() {
-  renderTableA(); renderTableB(); renderTableC(); renderTableD();
-  renderThreatResults(); renderTableE(); renderTableF(); renderTableG();
-  renderMitigationResults();
+// ========== RENDER CURRENT STEP ==========
+function renderCurrentStep() {
+  switch(currentStep) {
+    case 1: renderStepA(); break;
+    case 2: renderStepB(); break;
+    case 3: renderStepC(); break;
+    case 4: renderStepD(); break;
+    case 5: renderThreatResults(); break;
+    case 6: renderStepE(); break;
+    case 7: renderStepF(); break;
+    case 8: renderStepG(); break;
+    case 9: renderMitigationResults(); break;
+  }
 }
 
 // ========== ADD ROWS ==========
 function addAssetRow() {
   state.assets.push({name: '', desc: ''});
   saveState();
-  renderTableA();
-  const sel = window.matchMedia('(max-width:768px)').matches ? '#mobile-a' : '#table-a';
-  const rows = document.querySelectorAll(`${sel} input[data-field="name"]`);
-  const last = rows[rows.length-1];
-  if (last) { last.scrollIntoView({behavior:'smooth',block:'center'}); last.focus(); }
+  renderStepA();
+  const rows = document.querySelectorAll('#items-a .item-row');
+  const last = rows[rows.length - 1];
+  if (last) {
+    last.scrollIntoView({behavior:'smooth', block:'center'});
+    const inp = last.querySelector('input[data-field="name"]');
+    if (inp) inp.focus();
+  }
 }
 
 function addThreatRow() {
   state.threats.push({name: '', desc: ''});
   saveState();
-  renderTableB();
-  const sel = window.matchMedia('(max-width:768px)').matches ? '#mobile-b' : '#table-b';
-  const rows = document.querySelectorAll(`${sel} input[data-field="name"]`);
-  const last = rows[rows.length-1];
-  if (last) { last.scrollIntoView({behavior:'smooth',block:'center'}); last.focus(); }
+  renderStepB();
+  const rows = document.querySelectorAll('#items-b .item-row');
+  const last = rows[rows.length - 1];
+  if (last) {
+    last.scrollIntoView({behavior:'smooth', block:'center'});
+    const inp = last.querySelector('input[data-field="name"]');
+    if (inp) inp.focus();
+  }
 }
 
 // ========== EXPORT ==========
@@ -1428,9 +1551,12 @@ function exportCSV() {
   if (!filled.length) { alert('No data to export.'); return; }
   let csv = 'Asset Name,Risk Rating,Vulnerability Rating,Priority Score,Ease of Fix,Ease of Replace,Ease of Remove,Action Plan\n';
   filled.forEach(a => {
-    const r=state.riskRatings[a.idx]?.rating||''; const v=state.vulnRatings[a.idx]?.rating||'';
-    const p=calcPriority(a.idx)??''; const fix=state.fixScores[a.idx]||'';
-    const rep=state.replaceScores[a.idx]||''; const rem=state.removeScores[a.idx]||'';
+    const r=state.riskRatings[a.idx]?.rating||'';
+    const v=state.vulnRatings[a.idx]?.rating||'';
+    const p=calcPriority(a.idx)??'';
+    const fix=state.fixScores[a.idx]||'';
+    const rep=state.replaceScores[a.idx]||'';
+    const rem=state.removeScores[a.idx]||'';
     const notes=(state.mitigationNotes[a.idx]||'').replace(/"/g,'""');
     csv += `"${a.name.replace(/"/g,'""')}","${r}","${v}","${p}","${fix}","${rep}","${rem}","${notes}"\n`;
   });
@@ -1442,7 +1568,7 @@ function exportCSV() {
 }
 
 function printResults() {
-  switchTab('mitigation-results');
+  goToStep(9);
   setTimeout(() => window.print(), 300);
 }
 
@@ -1451,11 +1577,12 @@ function clearAll() {
   if (!confirm('Really clear everything? This cannot be undone.')) return;
   localStorage.removeItem(STORAGE_KEY);
   state = defaultState();
-  renderAll();
+  goToStep(0);
 }
 
 // ========== INIT ==========
-renderAll();
+buildStepper();
+updateStepper();
 </script>
 </body>
 </html>
