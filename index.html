@@ -928,7 +928,6 @@
 <script>
 // ========== STATE ==========
 const STORAGE_KEY = 'threat_risk_tool_data';
-const DEFAULT_ROW_COUNT = 10;
 const TOTAL_STEPS = 10; // 0=intro, 1-8=steps, 9=final
 
 let currentStep = 0;
@@ -936,8 +935,8 @@ let state = loadState();
 
 function defaultState() {
   return {
-    assets: Array.from({length: DEFAULT_ROW_COUNT}, () => ({name: '', desc: ''})),
-    threats: Array.from({length: 6}, () => ({name: '', desc: ''})),
+    assets: Array.from({length: 3}, () => ({name: '', desc: ''})),
+    threats: Array.from({length: 3}, () => ({name: '', desc: ''})),
     riskRatings: {},
     vulnRatings: {},
     threatNotes: {},
