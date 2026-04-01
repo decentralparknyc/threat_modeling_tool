@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pattaya — Proposed Features</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #fafbfc;
+    --surface: #ffffff;
+    --primary: #0a0a0a;
+    --accent: #16a34a;
+    --accent-hover: #15803d;
+    --accent-soft: #f0fdf4;
+    --accent-border: #bbf7d0;
+    --text: #111827;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --danger: #ef4444;
+    --warning: #f59e0b;
+    --border: #e5e7eb;
+    --radius: 16px;
+    --radius-sm: 10px;
+    --shadow-md: 0 4px 20px rgba(0,0,0,0.06);
+    --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Slide container */
+  .deck { position: relative; width: 100vw; height: 100vh; }
+  .slide {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    padding: 60px 80px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateX(40px);
+  }
+  .slide.active {
+    opacity: 1; pointer-events: auto; transform: translateX(0);
+  }
+
+  /* Typography */
+  h1 { font-size: 2.8rem; font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+  h2 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+  h3 { font-size: 1.3rem; font-weight: 600; margin-bottom: 6px; }
+  .subtitle { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 40px; max-width: 700px; text-align: center; line-height: 1.6; }
+  .green { color: var(--accent); }
+  .red { color: var(--danger); }
+  .orange { color: var(--warning); }
+
+  /* Badge */
+  .badge {
+    display: inline-block;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid var(--accent-border);
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  /* Cards grid */
+  .cards { display: grid; gap: 20px; width: 100%; max-width: 1000px; }
+  .cards-2 { grid-template-columns: 1fr 1fr; }
+  .cards-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+  .card p { color: var(--text-secondary); line-height: 1.6; margin-top: 8px; font-size: 0.95rem; }
+  .card .icon { font-size: 2rem; margin-bottom: 12px; }
+
+  /* Feature list */
+  .features { list-style: none; max-width: 700px; width: 100%; }
+  .features li {
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    display: flex; align-items: center; gap: 14px;
+    font-size: 1.05rem;
+    box-shadow: var(--shadow-md);
+  }
+  .features li .num {
+    background: var(--accent);
+    color: white;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  /* Comparison table */
+  .comparison {
+    border-collapse: collapse;
+    max-width: 900px;
+    width: 100%;
+    font-size: 0.9rem;
+  }
+  .comparison th, .comparison td {
+    padding: 12px 16px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .comparison th {
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .comparison td:first-child { text-align: left; font-weight: 500; }
+  .comparison tr:hover { background: #f9fafb; }
+
+  /* Mockup bars */
+  .bar-chart { max-width: 600px; width: 100%; }
+  .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .bar-label { width: 120px; font-size: 0.9rem; font-weight: 500; text-align: right; }
+  .bar-track { flex: 1; height: 32px; background: #f3f4f6; border-radius: 8px; overflow: hidden; position: relative; }
+  .bar-fill { height: 100%; border-radius: 8px; display: flex; align-items: center; padding-left: 12px; color: white; font-weight: 600; font-size: 0.8rem; transition: width 1s ease; }
+  .bar-fill.green-bg { background: var(--accent); }
+  .bar-fill.red-bg { background: var(--danger); }
+  .bar-fill.orange-bg { background: var(--warning); }
+  .bar-fill.blue-bg { background: #3b82f6; }
+
+  /* Quiz mockup */
+  .quiz-mock { max-width: 500px; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; box-shadow: var(--shadow-md); }
+  .quiz-q { font-weight: 600; margin-bottom: 12px; font-size: 1.05rem; }
+  .quiz-opt {
+    display: block; padding: 10px 16px; margin-bottom: 8px;
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    cursor: pointer; transition: var(--transition); font-size: 0.95rem;
+  }
+  .quiz-opt:hover, .quiz-opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+  .quiz-opt.sel::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+
+  /* Chip selector mockup */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; max-width: 500px; justify-content: center; margin-top: 16px; }
+  .chip {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--surface);
+  }
+  .chip:hover, .chip.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); font-weight: 500; }
+
+  /* Tip card */
+  .tip-card {
+    background: var(--accent-soft);
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    max-width: 600px;
+    width: 100%;
+  }
+  .tip-card strong { color: var(--accent); }
+  .tip-card p { color: var(--text-secondary); font-size: 0.9rem; margin-top: 4px; }
+
+  /* Strategy pills */
+  .strategies { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+  .strat-pill {
+    padding: 10px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 2px solid;
+  }
+  .strat-fix { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .strat-replace { border-color: #3b82f6; color: #3b82f6; background: #eff6ff; }
+  .strat-remove { border-color: var(--danger); color: var(--danger); background: #fef2f2; }
+  .strat-accept { border-color: var(--warning); color: #b45309; background: #fffbeb; }
+  .strat-new { position: relative; }
+  .strat-new::after {
+    content: "NEW";
+    position: absolute;
+    top: -8px; right: -8px;
+    background: var(--danger);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 40px;
+    padding: 10px 24px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.1);
+    z-index: 100;
+  }
+  .nav button {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.2rem; color: var(--text-secondary);
+    padding: 6px 12px; border-radius: 8px;
+    transition: var(--transition);
+  }
+  .nav button:hover { color: var(--accent); background: var(--accent-soft); }
+  .nav button:disabled { opacity: 0.3; cursor: default; }
+  .nav button:disabled:hover { color: var(--text-secondary); background: none; }
+  .nav .counter { font-size: 0.85rem; color: var(--text-muted); font-weight: 500; min-width: 60px; text-align: center; }
+
+  /* Progress bar */
+  .progress-bar { position: fixed; top: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.5s ease; z-index: 100; }
+
+  /* Keyboard hint */
+  .kbd-hint {
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    font-size: 0.75rem; color: var(--text-muted);
+  }
+  kbd {
+    background: #f3f4f6; border: 1px solid var(--border);
+    padding: 2px 8px; border-radius: 4px; font-family: inherit; font-size: 0.75rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- Slide 0: Title -->
+  <div class="slide active" data-slide="0">
+    <span class="badge">Market Research</span>
+    <h1>Pattaya — <span class="green">Proposed Features</span></h1>
+    <p class="subtitle">7 features inspired by deep research into existing security assessment tools. Each one strengthens Pattaya's unique position while keeping it simple, private, and zero-dependency.</p>
+    <div class="chips">
+      <span class="chip sel">Zero Dependencies</span>
+      <span class="chip sel">Client-Only</span>
+      <span class="chip sel">Privacy-First</span>
+      <span class="chip sel">Open Source</span>
+    </div>
+  </div>
+
+  <!-- Slide 1: The Gap -->
+  <div class="slide" data-slide="1">
+    <span class="badge">The Landscape</span>
+    <h1>No tool does what Pattaya does</h1>
+    <p class="subtitle">We researched 10+ tools. None combine open-source, personal-focused, and quantitative risk scoring.</p>
+    <table class="comparison">
+      <tr>
+        <th></th><th>Pattaya</th><th>digital-defense.io</th><th>JSAT</th><th>CR Planner</th><th>ISRA</th>
+      </tr>
+      <tr><td>Open source</td><td class="green">&#10003;</td><td class="green">&#10003;</td><td class="red">&#10007;</td><td class="red">&#10007;</td><td class="green">&#10003;</td></tr>
+      <tr><td>Personal (not enterprise)</td><td class="green">&#10003;</td><td class="green">&#10003;</td><td class="green">&#10003;</td><td class="green">&#10003;</td><td class="red">&#10007;</td></tr>
+      <tr><td>Quantitative scoring</td><td class="green">&#10003;</td><td class="red">&#10007;</td><td>Partial</td><td class="red">&#10007;</td><td class="green">&#10003;</td></tr>
+      <tr><td>Asset x Threat matrix</td><td class="green">&#10003;</td><td class="red">&#10007;</td><td class="red">&#10007;</td><td class="red">&#10007;</td><td class="green">&#10003;</td></tr>
+      <tr><td>Multilingual + RTL</td><td class="green">&#10003;</td><td class="red">&#10007;</td><td class="green">&#10003;</td><td class="red">&#10007;</td><td class="red">&#10007;</td></tr>
+    </table>
+  </div>
+
+  <!-- Slide 2: Feature 1 — Threat Libraries -->
+  <div class="slide" data-slide="2">
+    <span class="badge">Feature 1</span>
+    <h1>Pre-built <span class="green">Threat Libraries</span></h1>
+    <p class="subtitle">No more blank page. Offer common asset and threat actor suggestions users can pick from instantly.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;">Inspired by: digital-defense.io, AWS Threat Composer</p>
+    <div style="display:flex;gap:30px;flex-wrap:wrap;justify-content:center;">
+      <div>
+        <h3 style="margin-bottom:10px;">Common Assets</h3>
+        <div class="chips" style="max-width:300px;">
+          <span class="chip sel">Email Accounts</span>
+          <span class="chip">Social Media</span>
+          <span class="chip sel">Cloud Storage</span>
+          <span class="chip">Financial Accounts</span>
+          <span class="chip">Messaging Apps</span>
+          <span class="chip sel">Devices</span>
+          <span class="chip">Crypto Wallets</span>
+          <span class="chip">Photos/Docs</span>
+        </div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:10px;">Common Threat Actors</h3>
+        <div class="chips" style="max-width:300px;">
+          <span class="chip sel">Cybercriminals</span>
+          <span class="chip">Data Brokers</span>
+          <span class="chip sel">Phishing Attackers</span>
+          <span class="chip">Gov Surveillance</span>
+          <span class="chip">Physical Thieves</span>
+          <span class="chip sel">Corporate Tracking</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 3: Feature 2 — Recommendations -->
+  <div class="slide" data-slide="3">
+    <span class="badge">Feature 2</span>
+    <h1>Actionable <span class="green">Recommendations</span></h1>
+    <p class="subtitle">Turn analysis into action. After scoring, show specific tips for each asset based on its risk level and chosen strategy.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:16px;">Inspired by: digital-defense.io (300+ tips), GCA Toolkit, Security in a Box</p>
+    <div class="tip-card">
+      <strong>Email Accounts</strong> — High Priority, Strategy: Fix
+      <p>&#8594; Enable 2FA on all email accounts</p>
+      <p>&#8594; Use a password manager (Bitwarden, KeePass)</p>
+      <p>&#8594; Check haveibeenpwned.com for breaches</p>
+      <p>&#8594; Review connected third-party apps</p>
+    </div>
+    <div class="tip-card">
+      <strong>Social Media</strong> — Medium Priority, Strategy: Replace
+      <p>&#8594; Migrate to privacy-respecting alternatives (Mastodon, Signal)</p>
+      <p>&#8594; Audit privacy settings on current platforms</p>
+      <p>&#8594; Remove unnecessary personal information</p>
+    </div>
+  </div>
+
+  <!-- Slide 4: Feature 3 — Score Dashboard -->
+  <div class="slide" data-slide="4">
+    <span class="badge">Feature 3</span>
+    <h1>Security Score <span class="green">Dashboard</span></h1>
+    <p class="subtitle">A single posture score (0–100) with visual breakdown. Satisfying, motivating, shareable.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Inspired by: AWS Threat Composer insights, JSAT scoring</p>
+    <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap;justify-content:center;">
+      <div style="width:140px;height:140px;border-radius:50%;border:8px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <span style="font-size:2.5rem;font-weight:800;color:var(--accent);">67</span>
+        <span style="font-size:0.75rem;color:var(--text-muted);">out of 100</span>
+      </div>
+      <div class="bar-chart">
+        <div class="bar-row">
+          <span class="bar-label">High Priority</span>
+          <div class="bar-track"><div class="bar-fill red-bg" style="width:30%;">2</div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Medium</span>
+          <div class="bar-track"><div class="bar-fill orange-bg" style="width:50%;">3</div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">Low</span>
+          <div class="bar-track"><div class="bar-fill green-bg" style="width:70%;">4</div></div>
+        </div>
+        <div class="bar-row">
+          <span class="bar-label">With Action Plan</span>
+          <div class="bar-track"><div class="bar-fill blue-bg" style="width:60%;">6 / 9</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 5: Feature 4 — Accept Risk -->
+  <div class="slide" data-slide="5">
+    <span class="badge">Feature 4</span>
+    <h1>Accept Risk — <span class="green">4th Strategy</span></h1>
+    <p class="subtitle">Some risks aren't worth acting on. Let users consciously accept them with a justification note.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Inspired by: ThalesGroup ISRA (ISO 27005: Mitigate / Retain / Avoid / Share)</p>
+    <div class="strategies">
+      <span class="strat-pill strat-fix">Fix</span>
+      <span class="strat-pill strat-replace">Replace</span>
+      <span class="strat-pill strat-remove">Remove</span>
+      <span class="strat-pill strat-accept strat-new">Accept</span>
+    </div>
+    <div style="margin-top:30px;max-width:500px;">
+      <div class="card">
+        <h3>Example: Old forum account</h3>
+        <p>Strategy: <strong style="color:#b45309;">Accept Risk</strong></p>
+        <p style="margin-top:8px;"><em>"Low-value account with no sensitive data. Not worth the effort to track down and delete."</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 6: Feature 5 — Education -->
+  <div class="slide" data-slide="6">
+    <span class="badge">Feature 5</span>
+    <h1>Education <span class="green">Sidebar</span></h1>
+    <p class="subtitle">Teach while assessing. Map EFF's 6 foundational questions to each step of the workflow.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Inspired by: EFF Surveillance Self-Defense, Security in a Box</p>
+    <div class="cards cards-2" style="max-width:700px;">
+      <div class="card">
+        <div style="font-size:0.8rem;color:var(--accent);font-weight:600;margin-bottom:4px;">Step A — Identify Assets</div>
+        <h3>What do you want to protect?</h3>
+        <p>"Your data, communications, and devices are your digital assets. Making a list is the first step to understanding what's at stake."</p>
+      </div>
+      <div class="card">
+        <div style="font-size:0.8rem;color:var(--accent);font-weight:600;margin-bottom:4px;">Step B — Threat Actors</div>
+        <h3>Who are you protecting it from?</h3>
+        <p>"Different adversaries have different capabilities. A pickpocket is not the same as a state actor."</p>
+      </div>
+      <div class="card">
+        <div style="font-size:0.8rem;color:var(--accent);font-weight:600;margin-bottom:4px;">Step C — Risk Rating</div>
+        <h3>How bad are the consequences?</h3>
+        <p>"Consider financial loss, reputational damage, physical safety, and emotional impact."</p>
+      </div>
+      <div class="card">
+        <div style="font-size:0.8rem;color:var(--accent);font-weight:600;margin-bottom:4px;">Step D — Vulnerability</div>
+        <h3>How likely is the threat?</h3>
+        <p>"A threat that's theoretically possible but extremely unlikely needs less attention than one that's already happening."</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 7: Feature 6 — Onboarding Quiz -->
+  <div class="slide" data-slide="7">
+    <span class="badge">Feature 6</span>
+    <h1>Guided <span class="green">Onboarding Quiz</span></h1>
+    <p class="subtitle">3–5 quick questions that pre-populate assets and threat actors. Lower the barrier to entry.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Inspired by: Consumer Reports Security Planner, JSAT assessment flow</p>
+    <div class="quiz-mock">
+      <div class="quiz-q">What devices do you use daily?</div>
+      <span class="quiz-opt sel">Smartphone</span>
+      <span class="quiz-opt sel">Laptop / Desktop</span>
+      <span class="quiz-opt">Tablet</span>
+      <span class="quiz-opt">Smart Home Devices</span>
+      <div style="margin-top:20px;">
+        <div class="quiz-q">What concerns you most?</div>
+        <span class="quiz-opt sel">Identity theft</span>
+        <span class="quiz-opt">Surveillance / tracking</span>
+        <span class="quiz-opt">Account hacking</span>
+        <span class="quiz-opt">Data leaks / breaches</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 8: Feature 7 — PDF Report -->
+  <div class="slide" data-slide="8">
+    <span class="badge">Feature 7</span>
+    <h1>PDF / Print <span class="green">Report</span></h1>
+    <p class="subtitle">A polished, shareable report for workshops, clients, or personal records. No libraries needed — enhanced print stylesheet.</p>
+    <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:20px;">Inspired by: JSAT (PDF export), AWS Threat Composer (Markdown/DOCX/PDF)</p>
+    <div class="card" style="max-width:500px;text-align:center;">
+      <div class="icon">&#128196;</div>
+      <h3>Report includes:</h3>
+      <p>&#10003; Overall security posture score</p>
+      <p>&#10003; Asset inventory with risk ratings</p>
+      <p>&#10003; Priority ranking table</p>
+      <p>&#10003; Recommended strategy per asset</p>
+      <p>&#10003; Actionable next steps</p>
+      <p style="margin-top:12px;"><em>Uses window.print() with a dedicated print layout — zero dependencies.</em></p>
+    </div>
+  </div>
+
+  <!-- Slide 9: Priority -->
+  <div class="slide" data-slide="9">
+    <span class="badge">Implementation Priority</span>
+    <h1>Build Order</h1>
+    <p class="subtitle">Ranked by effort-to-impact ratio. All stay within zero-dependency, client-only philosophy.</p>
+    <div class="bar-chart" style="max-width:700px;">
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">1. Threat Libraries</span>
+        <div class="bar-track"><div class="bar-fill green-bg" style="width:95%;">Small effort, High impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">2. Recommendations</span>
+        <div class="bar-track"><div class="bar-fill green-bg" style="width:85%;">Medium effort, High impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">3. Score Dashboard</span>
+        <div class="bar-track"><div class="bar-fill green-bg" style="width:75%;">Small effort, Medium impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">4. Accept Risk</span>
+        <div class="bar-track"><div class="bar-fill green-bg" style="width:70%;">Small effort, Medium impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">5. Education Sidebar</span>
+        <div class="bar-track"><div class="bar-fill blue-bg" style="width:65%;">Small effort, Medium impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">6. Onboarding Quiz</span>
+        <div class="bar-track"><div class="bar-fill blue-bg" style="width:55%;">Medium effort, Medium impact</div></div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label" style="width:200px;">7. PDF Report</span>
+        <div class="bar-track"><div class="bar-fill blue-bg" style="width:40%;">Small effort, Low impact</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 10: What NOT to build -->
+  <div class="slide" data-slide="10">
+    <span class="badge">Staying Focused</span>
+    <h1>What we're <span class="red">NOT</span> building</h1>
+    <p class="subtitle">Features we considered and deliberately rejected to keep Pattaya simple and private.</p>
+    <div class="cards cards-2" style="max-width:800px;">
+      <div class="card" style="border-left:3px solid var(--danger);">
+        <h3>AI-generated threats</h3>
+        <p>Requires external API calls. Breaks zero-dependency and privacy-first principles. (AWS Threat Composer uses Bedrock.)</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--danger);">
+        <h3>Attack path AND/OR logic</h3>
+        <p>Too complex for personal use. Enterprise pattern from ISRA that would overwhelm non-technical users.</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--danger);">
+        <h3>Account system</h3>
+        <p>No sign-ups, no servers. LocalStorage is the right call. (JSAT requires email.)</p>
+      </div>
+      <div class="card" style="border-left:3px solid var(--danger);">
+        <h3>Backend API</h3>
+        <p>Pattaya is client-only. No server to host, no data to leak, no infrastructure to maintain.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide 11: Summary -->
+  <div class="slide" data-slide="11">
+    <span class="badge">Next Steps</span>
+    <h1>Let's <span class="green">build</span></h1>
+    <p class="subtitle">7 features that deepen Pattaya's moat as the only open-source, quantitative, personal threat modeling tool.</p>
+    <ul class="features">
+      <li><span class="num">1</span> Pre-built threat libraries — eliminate the blank page</li>
+      <li><span class="num">2</span> Actionable recommendations — turn scores into steps</li>
+      <li><span class="num">3</span> Security score dashboard — visual payoff</li>
+      <li><span class="num">4</span> Accept Risk option — complete the framework</li>
+      <li><span class="num">5</span> Education sidebar — teach while assessing</li>
+      <li><span class="num">6</span> Guided onboarding quiz — lower the barrier</li>
+      <li><span class="num">7</span> PDF/Print report — shareable output</li>
+    </ul>
+  </div>
+
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button id="prev" onclick="go(-1)">&#8592; Prev</button>
+  <span class="counter" id="counter">1 / 12</span>
+  <button id="next" onclick="go(1)">Next &#8594;</button>
+</div>
+<div class="kbd-hint">Use <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> arrow keys to navigate</div>
+
+<script>
+  let current = 0;
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+
+  function show(n) {
+    slides.forEach((s, i) => s.classList.toggle('active', i === n));
+    document.getElementById('counter').textContent = `${n + 1} / ${total}`;
+    document.getElementById('prev').disabled = n === 0;
+    document.getElementById('next').disabled = n === total - 1;
+    document.getElementById('progress').style.width = `${((n + 1) / total) * 100}%`;
+  }
+
+  function go(dir) {
+    current = Math.max(0, Math.min(total - 1, current + dir));
+    show(current);
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  });
+
+  show(0);
+</script>
+
+</body>
+</html>

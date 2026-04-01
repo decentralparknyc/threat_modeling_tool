@@ -411,12 +411,78 @@
     .hero h1 { font-size: 22px; }
   }
 
+  /* ===== SUGGESTION CHIPS ===== */
+  .suggestion-chips {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;
+  }
+  .suggestion-chips .chip-label {
+    font-size: 12px; font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.5px; width: 100%; margin-bottom: 2px;
+  }
+  .suggestion-chips .chip {
+    display: inline-flex; align-items: center; gap: 4px; padding: 5px 14px;
+    border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+    background: var(--accent-soft); color: var(--accent); border: 1.5px solid var(--accent-border);
+    transition: all var(--transition);
+  }
+  .suggestion-chips .chip:hover { background: var(--accent-muted); transform: translateY(-1px); }
+
+  /* ===== QUIZ CHIPS ===== */
+  .quiz-section { margin-bottom: 28px; }
+  .quiz-question { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 12px; }
+  .quiz-chips {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px;
+  }
+  .quiz-chips .qchip {
+    display: inline-flex; align-items: center; gap: 4px; padding: 8px 18px;
+    border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer;
+    background: var(--surface); color: var(--text-secondary); border: 1.5px solid var(--border);
+    transition: all var(--transition);
+  }
+  .quiz-chips .qchip:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-chips .qchip.selected { background: var(--accent-soft); color: var(--accent); border-color: var(--accent); }
+
+  /* ===== RECOMMENDATION TIPS ===== */
+  .rec-tips {
+    margin-top: 10px; padding: 10px 14px; background: #f0fdf4;
+    border-left: 3px solid var(--accent); border-radius: 0 var(--radius-xs) var(--radius-xs) 0;
+    font-size: 13px; color: var(--text);
+  }
+  .rec-tips .rec-label { font-size: 11px; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .rec-tips ul { margin: 0; padding-left: 18px; }
+  .rec-tips li { margin-bottom: 3px; line-height: 1.5; color: var(--text-secondary); }
+
+  /* ===== SECURITY SCORE ===== */
+  .score-dashboard { text-align: center; margin-bottom: 24px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+  .score-circle {
+    width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; margin: 0 auto 12px; border: 6px solid; font-size: 36px; font-weight: 800;
+  }
+  .score-circle.green { border-color: #16a34a; color: #16a34a; }
+  .score-circle.orange { border-color: #f59e0b; color: #d97706; }
+  .score-circle.red { border-color: #ef4444; color: #dc2626; }
+  .score-out-of { font-size: 13px; color: var(--text-secondary); font-weight: 600; margin-bottom: 12px; }
+  .score-bar { height: 8px; background: var(--border-light); border-radius: 4px; overflow: hidden; max-width: 300px; margin: 0 auto; }
+  .score-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; transition: width 0.5s ease; }
+  .score-bar-label { font-size: 12px; color: var(--text-secondary); margin-top: 6px; }
+
+  /* ===== ACCEPT RISK ===== */
+  .accept-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: #fffbeb; color: #d97706; }
+
   /* ===== PRINT ===== */
   @media print {
-    .progress-header, .nav-footer, .add-row-btn, .toolbar-row { display: none !important; }
-    .step-panel { display: block !important; page-break-inside: avoid; }
+    .progress-header, .nav-footer, .add-row-btn, .toolbar-row, .suggestion-chips, .quiz-section { display: none !important; }
+    .step-panel { display: none !important; }
+    .step-panel:last-child { display: block !important; }
+    #panel-9 { display: block !important; }
     .main-content { padding: 0; max-width: 100%; }
     body { background: white; }
+    .card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    .stat-card { box-shadow: none; }
+    .score-circle { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .priority-badge, .score-chip.best { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .rec-tips { break-inside: avoid; }
+    h1::after { content: " — Threat Risk Assessment Report"; font-size: 14px; font-weight: 400; color: #666; }
   }
 </style>
 </head>
@@ -600,7 +666,66 @@ const I18N = {
     noAssetsSummary: 'No assets to summarize.',
     confirmClear1: 'This will permanently delete all your data. Are you sure?',
     confirmClear2: 'Really clear everything? This cannot be undone.',
-    noDataExport: 'No data to export.'
+    noDataExport: 'No data to export.',
+
+    // Suggestion chips
+    suggestedAssets: 'Quick Add',
+    suggestedThreats: 'Quick Add',
+    chipEmailAccounts: 'Email Accounts',
+    chipSocialMedia: 'Social Media',
+    chipCloudStorage: 'Cloud Storage',
+    chipFinancialAccounts: 'Financial Accounts',
+    chipMessagingApps: 'Messaging Apps',
+    chipDevices: 'Devices',
+    chipCryptoWallets: 'Crypto Wallets',
+    chipPhotoDocs: 'Photos & Documents',
+    chipCybercriminals: 'Cybercriminals',
+    chipPhishingAttackers: 'Phishing Attackers',
+    chipDataBrokers: 'Data Brokers',
+    chipGovSurveillance: 'Government Surveillance',
+    chipCorpTracking: 'Corporate Tracking',
+    chipPhysicalThieves: 'Physical Thieves',
+
+    // Recommendations
+    recommendations: 'Recommended Actions',
+
+    // Security Score
+    securityScore: 'Security Posture Score',
+    outOf100: 'out of 100',
+    assetsWithPlans: 'assets have action plans',
+
+    // Accept risk
+    accept: 'Accept',
+    acceptRisk: 'Accept Risk',
+    acceptJustification: 'Justification',
+    phAcceptJustification: 'Why are you accepting this risk?',
+    bestToAccept: 'Accepted',
+
+    // Quiz
+    quizTitle: 'Quick Setup',
+    quizDesc: 'Answer a few questions to pre-populate your assessment with relevant assets and threats.',
+    quizQ1: 'What devices do you use daily?',
+    quizQ2: 'What concerns you most?',
+    quizQ3: 'What best describes you?',
+    quizSmartphone: 'Smartphone',
+    quizLaptop: 'Laptop/Desktop',
+    quizTablet: 'Tablet',
+    quizSmartHome: 'Smart Home Devices',
+    quizIdentityTheft: 'Identity Theft',
+    quizSurveillance: 'Surveillance',
+    quizAccountHacking: 'Account Hacking',
+    quizDataLeaks: 'Data Leaks',
+    quizPhysicalTheft: 'Physical Theft',
+    quizGeneral: 'General User',
+    quizJournalist: 'Journalist/Media',
+    quizActivist: 'Activist/NGO',
+    quizBusiness: 'Business Professional',
+    quizStudent: 'Student',
+    quizSkip: 'Skip Quiz',
+    quizContinue: 'Continue with Selections',
+
+    // Report
+    generateReport: 'Generate Report'
   },
 
   es: {
@@ -1769,6 +1894,90 @@ const VULN_OPTIONS = ['Very Vulnerable', 'Vulnerable', 'Moderately Vulnerable'];
 const RISK_LABEL_KEYS = { 'Very Risky': 'veryRisky', 'Risky': 'risky', 'Moderately Risky': 'moderatelyRisky' };
 const VULN_LABEL_KEYS = { 'Very Vulnerable': 'veryVulnerable', 'Vulnerable': 'vulnerable', 'Moderately Vulnerable': 'moderatelyVulnerable' };
 
+// ========== SUGGESTION LIBRARIES ==========
+const ASSET_SUGGESTIONS = [
+  { key: 'chipEmailAccounts', desc: 'Gmail, Outlook, work email' },
+  { key: 'chipSocialMedia', desc: 'Twitter, Instagram, LinkedIn, Facebook' },
+  { key: 'chipCloudStorage', desc: 'Google Drive, Dropbox, iCloud' },
+  { key: 'chipFinancialAccounts', desc: 'Online banking, PayPal, Venmo' },
+  { key: 'chipMessagingApps', desc: 'WhatsApp, Signal, Telegram, iMessage' },
+  { key: 'chipDevices', desc: 'Laptop, phone, tablet' },
+  { key: 'chipCryptoWallets', desc: 'Hardware wallets, exchange accounts' },
+  { key: 'chipPhotoDocs', desc: 'Personal photos, tax docs, IDs' }
+];
+
+const THREAT_SUGGESTIONS = [
+  { key: 'chipCybercriminals', desc: 'Financially motivated hackers and scammers' },
+  { key: 'chipPhishingAttackers', desc: 'Send fake login pages via email or SMS' },
+  { key: 'chipDataBrokers', desc: 'Collect and sell personal information' },
+  { key: 'chipGovSurveillance', desc: 'State-sponsored monitoring programs' },
+  { key: 'chipCorpTracking', desc: 'Companies tracking behavior for profit' },
+  { key: 'chipPhysicalThieves', desc: 'Steal devices for data or resale' }
+];
+
+// ========== RECOMMENDATIONS ==========
+const RECOMMENDATIONS = {
+  email: {
+    fix: ["Enable 2FA on all email accounts", "Use a password manager for unique passwords", "Check haveibeenpwned.com for breaches"],
+    replace: ["Switch to a privacy-focused provider (ProtonMail, Tutanota)", "Use email aliases for signups (SimpleLogin)"],
+    remove: ["Delete unused email accounts", "Unsubscribe from unnecessary mailing lists"],
+    accept: ["Document the accepted risk and review quarterly"]
+  },
+  social: {
+    fix: ["Audit privacy settings on all platforms", "Enable 2FA", "Remove unnecessary personal info from profiles"],
+    replace: ["Migrate to privacy-respecting alternatives (Mastodon, Bluesky)", "Use separate accounts for personal/professional"],
+    remove: ["Delete unused social media accounts", "Use account deletion services"],
+    accept: ["Limit what you share going forward"]
+  },
+  cloud: {
+    fix: ["Enable 2FA on cloud accounts", "Review sharing permissions", "Enable encryption at rest"],
+    replace: ["Switch to zero-knowledge providers (Tresorit, Cryptomator)", "Use local encrypted backups"],
+    remove: ["Delete unneeded files from cloud", "Close unused cloud accounts"],
+    accept: ["Ensure data is non-sensitive or already public"]
+  },
+  financ: {
+    fix: ["Enable 2FA on all financial accounts", "Set up transaction alerts", "Use unique passwords per account"],
+    replace: ["Switch to banks with better security features", "Use virtual card numbers for online purchases"],
+    remove: ["Close unused financial accounts", "Remove saved payment methods from sites"],
+    accept: ["Monitor statements regularly for unauthorized activity"]
+  },
+  messag: {
+    fix: ["Enable disappearing messages", "Verify contact identity with safety numbers", "Update apps regularly"],
+    replace: ["Switch to end-to-end encrypted messengers (Signal)", "Avoid SMS for sensitive communications"],
+    remove: ["Delete old message histories", "Leave unused group chats"],
+    accept: ["Limit sensitive information shared via messaging"]
+  },
+  device: {
+    fix: ["Enable full-disk encryption", "Set strong passcode/biometric lock", "Keep OS and apps updated"],
+    replace: ["Upgrade devices that no longer receive security updates", "Use separate devices for sensitive work"],
+    remove: ["Factory reset and recycle old devices", "Remove unnecessary apps"],
+    accept: ["Ensure device has remote wipe capability"]
+  },
+  crypto: {
+    fix: ["Use hardware wallets for long-term storage", "Enable all available 2FA", "Store recovery phrases offline"],
+    replace: ["Move funds from exchanges to self-custody", "Switch to hardware wallet from software wallet"],
+    remove: ["Close unused exchange accounts", "Consolidate wallets to reduce attack surface"],
+    accept: ["Only keep amounts you can afford to lose on exchanges"]
+  },
+  photo: {
+    fix: ["Enable encryption on photo storage", "Use secure backup solutions", "Remove EXIF/location data from shared photos"],
+    replace: ["Switch to encrypted photo storage (Cryptee, Ente)", "Use local encrypted drives"],
+    remove: ["Delete sensitive photos from cloud services", "Shred physical copies of sensitive documents"],
+    accept: ["Ensure photos are non-sensitive or already shared publicly"]
+  }
+};
+
+function getRecommendations(assetName, strategy) {
+  if (!assetName || !strategy) return [];
+  const lower = assetName.toLowerCase();
+  for (const key of Object.keys(RECOMMENDATIONS)) {
+    if (lower.includes(key)) {
+      return RECOMMENDATIONS[key][strategy] || [];
+    }
+  }
+  return [];
+}
+
 function t(key) { return I18N[lang][key] || I18N.en[key] || key; }
 
 function setLang(newLang) {
@@ -1797,7 +2006,8 @@ function defaultState() {
     assets: Array.from({length: 3}, () => ({name: '', desc: ''})),
     threats: Array.from({length: 3}, () => ({name: '', desc: ''})),
     riskRatings: {}, vulnRatings: {}, threatNotes: {},
-    fixScores: {}, replaceScores: {}, removeScores: {}, mitigationNotes: {}
+    fixScores: {}, replaceScores: {}, removeScores: {}, mitigationNotes: {},
+    acceptedRisks: {}, quizCompleted: false
   };
 }
 
@@ -1912,6 +2122,171 @@ function renderPanel(n) {
   }
 }
 
+// ========== SUGGESTION CHIP HELPERS ==========
+function renderSuggestionChips(suggestions, labelKey, onClickFn) {
+  return `<div class="suggestion-chips">
+    <div class="chip-label">${t(labelKey)}</div>
+    ${suggestions.map(s => `<span class="chip" onclick="${onClickFn}('${s.key}', '${esc(s.desc)}')">${t(s.key)}</span>`).join('')}
+  </div>`;
+}
+
+function addSuggestionAsset(key, desc) {
+  const name = t(key);
+  const emptyIdx = state.assets.findIndex(a => a.name.trim() === '' && a.desc.trim() === '');
+  if (emptyIdx >= 0) {
+    state.assets[emptyIdx] = { name, desc };
+  } else {
+    state.assets.push({ name, desc });
+  }
+  saveState();
+  renderPanel(1);
+}
+
+function addSuggestionThreat(key, desc) {
+  const name = t(key);
+  const emptyIdx = state.threats.findIndex(th => th.name.trim() === '' && th.desc.trim() === '');
+  if (emptyIdx >= 0) {
+    state.threats[emptyIdx] = { name, desc };
+  } else {
+    state.threats.push({ name, desc });
+  }
+  saveState();
+  renderPanel(2);
+}
+
+// ========== QUIZ ==========
+let quizSelections = { devices: [], concerns: [], profile: '' };
+
+function showQuiz() {
+  const el = document.getElementById('panel-0');
+  el.innerHTML = `<div class="step-header">
+    <div class="step-badge" style="background:var(--accent-soft); color:var(--accent);">${t('quizTitle')}</div>
+    <h1>${t('quizTitle')}</h1>
+    <p>${t('quizDesc')}</p>
+  </div>
+  <div class="quiz-section">
+    <div class="quiz-question">${t('quizQ1')}</div>
+    <div class="quiz-chips" id="quiz-devices">
+      <span class="qchip" data-val="smartphone" onclick="toggleQuizChip(this,'devices')">${t('quizSmartphone')}</span>
+      <span class="qchip" data-val="laptop" onclick="toggleQuizChip(this,'devices')">${t('quizLaptop')}</span>
+      <span class="qchip" data-val="tablet" onclick="toggleQuizChip(this,'devices')">${t('quizTablet')}</span>
+      <span class="qchip" data-val="smarthome" onclick="toggleQuizChip(this,'devices')">${t('quizSmartHome')}</span>
+    </div>
+  </div>
+  <div class="quiz-section">
+    <div class="quiz-question">${t('quizQ2')}</div>
+    <div class="quiz-chips" id="quiz-concerns">
+      <span class="qchip" data-val="identity" onclick="toggleQuizChip(this,'concerns')">${t('quizIdentityTheft')}</span>
+      <span class="qchip" data-val="surveillance" onclick="toggleQuizChip(this,'concerns')">${t('quizSurveillance')}</span>
+      <span class="qchip" data-val="hacking" onclick="toggleQuizChip(this,'concerns')">${t('quizAccountHacking')}</span>
+      <span class="qchip" data-val="dataleaks" onclick="toggleQuizChip(this,'concerns')">${t('quizDataLeaks')}</span>
+      <span class="qchip" data-val="physicaltheft" onclick="toggleQuizChip(this,'concerns')">${t('quizPhysicalTheft')}</span>
+    </div>
+  </div>
+  <div class="quiz-section">
+    <div class="quiz-question">${t('quizQ3')}</div>
+    <div class="quiz-chips" id="quiz-profile">
+      <span class="qchip" data-val="general" onclick="selectQuizProfile(this)">${t('quizGeneral')}</span>
+      <span class="qchip" data-val="journalist" onclick="selectQuizProfile(this)">${t('quizJournalist')}</span>
+      <span class="qchip" data-val="activist" onclick="selectQuizProfile(this)">${t('quizActivist')}</span>
+      <span class="qchip" data-val="business" onclick="selectQuizProfile(this)">${t('quizBusiness')}</span>
+      <span class="qchip" data-val="student" onclick="selectQuizProfile(this)">${t('quizStudent')}</span>
+    </div>
+  </div>
+  <div class="nav-footer">
+    <button class="btn btn-ghost" onclick="renderPanel(0)">${t('quizSkip')}</button>
+    <button class="btn btn-primary" onclick="applyQuiz()">${t('quizContinue')}</button>
+  </div>`;
+}
+
+function toggleQuizChip(el, group) {
+  el.classList.toggle('selected');
+  const val = el.dataset.val;
+  const arr = quizSelections[group];
+  const idx = arr.indexOf(val);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(val);
+}
+
+function selectQuizProfile(el) {
+  document.querySelectorAll('#quiz-profile .qchip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  quizSelections.profile = el.dataset.val;
+}
+
+function applyQuiz() {
+  const assets = new Set();
+  const threats = new Set();
+
+  // Always add baseline
+  assets.add('Email Accounts|Gmail, Outlook, work email');
+  assets.add('Social Media|Twitter, Instagram, LinkedIn, Facebook');
+
+  // Devices
+  if (quizSelections.devices.includes('smartphone')) {
+    assets.add('Smartphone|Personal smartphone');
+    assets.add('Messaging Apps|WhatsApp, Signal, Telegram, iMessage');
+  }
+  if (quizSelections.devices.includes('laptop')) assets.add('Laptop/Desktop|Primary computer');
+  if (quizSelections.devices.includes('tablet')) assets.add('Tablet|Personal tablet');
+  if (quizSelections.devices.includes('smarthome')) assets.add('Smart Home Devices|Smart speakers, cameras, locks');
+
+  // Concerns
+  if (quizSelections.concerns.includes('identity')) threats.add('Identity Thieves|Steal personal info for fraud');
+  if (quizSelections.concerns.includes('surveillance')) threats.add('Government Surveillance|State-sponsored monitoring programs');
+  if (quizSelections.concerns.includes('hacking')) threats.add('Cybercriminals|Financially motivated hackers and scammers');
+  if (quizSelections.concerns.includes('dataleaks')) threats.add('Data Brokers|Collect and sell personal information');
+  if (quizSelections.concerns.includes('physicaltheft')) threats.add('Physical Thieves|Steal devices for data or resale');
+
+  // Profile
+  if (quizSelections.profile === 'journalist') {
+    assets.add('Email Accounts|Gmail, Outlook, work email');
+    assets.add('Cloud Storage|Google Drive, Dropbox, iCloud');
+    threats.add('Government Surveillance|State-sponsored monitoring programs');
+  }
+  if (quizSelections.profile === 'activist') {
+    assets.add('Email Accounts|Gmail, Outlook, work email');
+    assets.add('Messaging Apps|WhatsApp, Signal, Telegram, iMessage');
+    threats.add('Government Surveillance|State-sponsored monitoring programs');
+  }
+  if (quizSelections.profile === 'business') {
+    assets.add('Financial Accounts|Online banking, PayPal, Venmo');
+    assets.add('Cloud Storage|Google Drive, Dropbox, iCloud');
+  }
+
+  // Populate state
+  const assetArr = Array.from(assets).map(s => { const [name, desc] = s.split('|'); return { name, desc }; });
+  const threatArr = Array.from(threats).map(s => { const [name, desc] = s.split('|'); return { name, desc }; });
+
+  // Merge into state — replace empty rows, then add more
+  let ai = 0;
+  for (const a of assetArr) {
+    if (ai < state.assets.length && state.assets[ai].name.trim() === '') {
+      state.assets[ai] = a;
+    } else if (ai >= state.assets.length) {
+      state.assets.push(a);
+    } else {
+      state.assets.splice(ai, 0, a);
+    }
+    ai++;
+  }
+
+  let ti = 0;
+  for (const th of threatArr) {
+    if (ti < state.threats.length && state.threats[ti].name.trim() === '') {
+      state.threats[ti] = th;
+    } else if (ti >= state.threats.length) {
+      state.threats.push(th);
+    } else {
+      state.threats.splice(ti, 0, th);
+    }
+    ti++;
+  }
+
+  state.quizCompleted = true;
+  saveState();
+  goToStep(1);
+}
+
 // ========== RENDER: INTRO ==========
 function renderIntro(el) {
   const steps = t('previewSteps');
@@ -1925,7 +2300,7 @@ function renderIntro(el) {
         <div class="preview-text"><strong>${s[1]}</strong>${s[2]}</div>
       </div>`).join('')}
     </div>
-    <button class="btn btn-primary" onclick="goToStep(1)" style="font-size:17px; padding:16px 40px;">${t('beginAssessment')}</button>
+    <button class="btn btn-primary" onclick="showQuiz()" style="font-size:17px; padding:16px 40px;">${t('beginAssessment')}</button>
     <div class="privacy-note">${t('privacyNote')}</div>
   </div>`;
 }
@@ -1938,6 +2313,7 @@ function renderStepA(el) {
       <h1>${t('stepA_title')}</h1>
       <p>${t('stepA_desc')}</p>
     </div>
+    ${renderSuggestionChips(ASSET_SUGGESTIONS, 'suggestedAssets', 'addSuggestionAsset')}
     <div class="card"><div id="items-a"></div></div>
     <button class="add-row-btn" onclick="addAssetRow()">${t('addAsset')}</button>
     ${navFooter(0, 2, t('nextThreatActors'))}`;
@@ -1970,6 +2346,7 @@ function renderStepB(el) {
       <h1>${t('stepB_title')}</h1>
       <p>${t('stepB_desc')}</p>
     </div>
+    ${renderSuggestionChips(THREAT_SUGGESTIONS, 'suggestedThreats', 'addSuggestionThreat')}
     <div class="card"><div id="items-b"></div></div>
     <button class="add-row-btn" onclick="addThreatRow()">${t('addThreat')}</button>
     ${navFooter(1, 3, t('nextRiskRating'))}`;
@@ -2251,19 +2628,44 @@ function renderStepG(el) {
 function renderMitigationResults(el) {
   const filled = getFilledAssets();
   let summaryHtml = '';
+  let scoreDashHtml = '';
 
   if (filled.length) {
-    let fixBest=0, repBest=0, remBest=0;
+    let fixBest=0, repBest=0, remBest=0, acceptCount=0;
     filled.forEach(a => {
+      if (state.acceptedRisks[a.idx]) { acceptCount++; return; }
       const f=+(state.fixScores[a.idx]||0), r=+(state.replaceScores[a.idx]||0), m=+(state.removeScores[a.idx]||0);
       const mx=Math.max(f,r,m);
       if(mx>0){if(mx===f)fixBest++;else if(mx===r)repBest++;else remBest++;}
     });
+
+    // Security Score calculation
+    const scores = filled.map(a => ({...a, priority: calcPriority(a.idx)})).filter(a => a.priority !== null);
+    const highPriorityCount = scores.filter(s => s.priority >= 5).length;
+    const medPriorityCount = scores.filter(s => s.priority >= 3 && s.priority < 5).length;
+    const assetsWithActionPlan = filled.filter(a => (state.mitigationNotes[a.idx]||'').trim() !== '').length;
+    const assetsWithStrategy = filled.filter(a => {
+      const f=+(state.fixScores[a.idx]||0), r=+(state.replaceScores[a.idx]||0), m=+(state.removeScores[a.idx]||0);
+      return Math.max(f,r,m) > 0 || state.acceptedRisks[a.idx];
+    }).length;
+    let secScore = 100 - (highPriorityCount * 15 + medPriorityCount * 8) + (assetsWithActionPlan / filled.length * 30) + (assetsWithStrategy / filled.length * 20);
+    secScore = Math.max(0, Math.min(100, Math.round(secScore)));
+    const scoreColor = secScore >= 70 ? 'green' : secScore >= 40 ? 'orange' : 'red';
+    const planPct = Math.round(assetsWithActionPlan / filled.length * 100);
+
+    scoreDashHtml = `<div class="score-dashboard">
+      <div class="score-circle ${scoreColor}">${secScore}</div>
+      <div class="score-out-of">${t('securityScore')} &mdash; ${secScore} ${t('outOf100')}</div>
+      <div class="score-bar"><div class="score-bar-fill" style="width:${planPct}%"></div></div>
+      <div class="score-bar-label">${assetsWithActionPlan} / ${filled.length} ${t('assetsWithPlans')}</div>
+    </div>`;
+
     summaryHtml = `<div class="summary-grid">
       <div class="stat-card"><div class="stat-num">${filled.length}</div><div class="stat-label">${t('totalAssets')}</div></div>
       <div class="stat-card"><div class="stat-num" style="color:#16a34a">${fixBest}</div><div class="stat-label">${t('bestToFix')}</div></div>
       <div class="stat-card"><div class="stat-num" style="color:#7c3aed">${repBest}</div><div class="stat-label">${t('bestToReplace')}</div></div>
       <div class="stat-card"><div class="stat-num" style="color:#d97706">${remBest}</div><div class="stat-label">${t('bestToRemove')}</div></div>
+      <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${acceptCount}</div><div class="stat-label">${t('bestToAccept')}</div></div>
     </div>`;
   }
 
@@ -2273,10 +2675,12 @@ function renderMitigationResults(el) {
       <h1>${t('mitigation_title')}</h1>
       <p>${t('mitigation_desc')}</p>
     </div>
+    ${scoreDashHtml}
     ${summaryHtml}
     <div class="card"><div id="items-mitigation"></div></div>
     <div class="toolbar-row">
       <button class="btn btn-secondary" onclick="exportCSV()">${t('exportCSV')}</button>
+      <button class="btn btn-secondary" onclick="generateReport()">${t('generateReport')}</button>
       <button class="btn btn-secondary" onclick="printResults()">${t('printResults')}</button>
       <button class="btn btn-danger" onclick="clearAll()">${t('resetAllData')}</button>
     </div>
@@ -2294,26 +2698,68 @@ function renderMitigationResults(el) {
     const rep = state.replaceScores[a.idx]||'';
     const rem = state.removeScores[a.idx]||'';
     const notes = state.mitigationNotes[a.idx]||'';
+    const isAccepted = state.acceptedRisks[a.idx];
+    const acceptJust = isAccepted ? (state.acceptedRisks[a.idx].justification||'') : '';
     const f=+fix||0, r=+rep||0, m=+rem||0;
     const mx = Math.max(f,r,m);
-    const bestLabel = mx===0 ? '' : mx===f ? t('fix') : mx===r ? t('replace') : t('remove');
+    let bestLabel, bestStrategy;
+    if (isAccepted) { bestLabel = t('accept'); bestStrategy = 'accept'; }
+    else if (mx===0) { bestLabel = ''; bestStrategy = ''; }
+    else if (mx===f) { bestLabel = t('fix'); bestStrategy = 'fix'; }
+    else if (mx===r) { bestLabel = t('replace'); bestStrategy = 'replace'; }
+    else { bestLabel = t('remove'); bestStrategy = 'remove'; }
+
+    const recs = getRecommendations(a.name, bestStrategy);
+    const recsHtml = recs.length ? `<div class="rec-tips">
+      <div class="rec-label">${t('recommendations')}</div>
+      <ul>${recs.map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+    </div>` : '';
+
+    const acceptBadgeHtml = isAccepted ? `<span class="accept-badge">${t('bestToAccept')}</span>` : '';
+    const acceptJustHtml = isAccepted ? `<div class="mit-action" style="margin-top:6px;">
+      <div class="field-label">${t('acceptJustification')}</div>
+      <input type="text" value="${esc(acceptJust)}" data-i="${a.idx}" data-accept-just="1" placeholder="${t('phAcceptJustification')}">
+    </div>` : '';
 
     return `<div class="mit-card">
-      <div class="mit-name">${esc(a.name)} ${priorityBadge(p)}</div>
+      <div class="mit-name">${esc(a.name)} ${priorityBadge(p)} ${acceptBadgeHtml}</div>
       <div class="mit-scores">
-        <span class="score-chip${mx>0&&mx===f?' best':''}">${t('fix')}: ${fix||'&mdash;'}</span>
-        <span class="score-chip${mx>0&&mx===r?' best':''}">${t('replace')}: ${rep||'&mdash;'}</span>
-        <span class="score-chip${mx>0&&mx===m?' best':''}">${t('remove')}: ${rem||'&mdash;'}</span>
-        ${bestLabel ? `<span class="score-chip best">\u2192 ${bestLabel}</span>` : ''}
+        <span class="score-chip${!isAccepted&&mx>0&&mx===f?' best':''}">${t('fix')}: ${fix||'&mdash;'}</span>
+        <span class="score-chip${!isAccepted&&mx>0&&mx===r?' best':''}">${t('replace')}: ${rep||'&mdash;'}</span>
+        <span class="score-chip${!isAccepted&&mx>0&&mx===m?' best':''}">${t('remove')}: ${rem||'&mdash;'}</span>
+        <span class="score-chip${isAccepted?' best':''}" style="cursor:pointer;" onclick="toggleAcceptRisk(${a.idx})">${t('acceptRisk')}</span>
+        ${bestLabel && !isAccepted ? `<span class="score-chip best">\u2192 ${bestLabel}</span>` : ''}
       </div>
+      ${acceptJustHtml}
       <div class="mit-action">
         <div class="field-label">${t('actionPlan')}</div>
-        <input type="text" value="${esc(notes)}" data-i="${a.idx}" placeholder="${t('phActionPlan')}">
+        <input type="text" value="${esc(notes)}" data-i="${a.idx}" data-mitigation-note="1" placeholder="${t('phActionPlan')}">
       </div>
+      ${recsHtml}
     </div>`;
   }).join('');
 
-  bindInputs(items, e => { state.mitigationNotes[e.target.dataset.i] = e.target.value; saveState(); });
+  items.querySelectorAll('input[data-mitigation-note]').forEach(inp => {
+    inp.addEventListener('input', e => { state.mitigationNotes[e.target.dataset.i] = e.target.value; saveState(); });
+  });
+  items.querySelectorAll('input[data-accept-just]').forEach(inp => {
+    inp.addEventListener('input', e => {
+      if (state.acceptedRisks[e.target.dataset.i]) {
+        state.acceptedRisks[e.target.dataset.i].justification = e.target.value;
+        saveState();
+      }
+    });
+  });
+}
+
+function toggleAcceptRisk(idx) {
+  if (state.acceptedRisks[idx]) {
+    delete state.acceptedRisks[idx];
+  } else {
+    state.acceptedRisks[idx] = { justification: '' };
+  }
+  saveState();
+  renderPanel(9);
 }
 
 // ========== ADD ROWS ==========
@@ -2339,7 +2785,7 @@ function addThreatRow() {
 function exportCSV() {
   const filled = getFilledAssets();
   if (!filled.length) { alert(t('noDataExport')); return; }
-  let csv = 'Asset Name,Risk Rating,Vulnerability Rating,Priority Score,Ease of Fix,Ease of Replace,Ease of Remove,Action Plan\n';
+  let csv = 'Asset Name,Risk Rating,Vulnerability Rating,Priority Score,Ease of Fix,Ease of Replace,Ease of Remove,Accepted,Accept Justification,Action Plan\n';
   filled.forEach(a => {
     const r=state.riskRatings[a.idx]?.rating||'';
     const v=state.vulnRatings[a.idx]?.rating||'';
@@ -2347,8 +2793,10 @@ function exportCSV() {
     const fix=state.fixScores[a.idx]||'';
     const rep=state.replaceScores[a.idx]||'';
     const rem=state.removeScores[a.idx]||'';
+    const accepted=state.acceptedRisks[a.idx]?'Yes':'No';
+    const acceptJust=(state.acceptedRisks[a.idx]?.justification||'').replace(/"/g,'""');
     const notes=(state.mitigationNotes[a.idx]||'').replace(/"/g,'""');
-    csv += `"${a.name.replace(/"/g,'""')}","${r}","${v}","${p}","${fix}","${rep}","${rem}","${notes}"\n`;
+    csv += `"${a.name.replace(/"/g,'""')}","${r}","${v}","${p}","${fix}","${rep}","${rem}","${accepted}","${acceptJust}","${notes}"\n`;
   });
   const blob = new Blob([csv], {type:'text/csv'});
   const a = document.createElement('a');
@@ -2360,6 +2808,24 @@ function exportCSV() {
 function printResults() {
   goToStep(9);
   setTimeout(() => window.print(), 300);
+}
+
+function generateReport() {
+  // Show all relevant panels for comprehensive print
+  const panels = document.querySelectorAll('.step-panel');
+  panels.forEach(p => p.style.display = 'none');
+  // Render panels 1 (assets), 2 (threats), 5 (threat results), 9 (mitigation)
+  [1, 2, 5, 9].forEach(n => {
+    const p = document.getElementById(`panel-${n}`);
+    renderPanel(n);
+    p.style.display = 'block';
+  });
+  setTimeout(() => {
+    window.print();
+    // Restore normal view
+    panels.forEach(p => p.style.display = '');
+    goToStep(9);
+  }, 300);
 }
 
 function clearAll() {
