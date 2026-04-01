@@ -2003,8 +2003,8 @@ let state = loadState();
 
 function defaultState() {
   return {
-    assets: Array.from({length: 3}, () => ({name: '', desc: ''})),
-    threats: Array.from({length: 3}, () => ({name: '', desc: ''})),
+    assets: [{name: '', desc: ''}],
+    threats: [{name: '', desc: ''}],
     riskRatings: {}, vulnRatings: {}, threatNotes: {},
     fixScores: {}, replaceScores: {}, removeScores: {}, mitigationNotes: {},
     acceptedRisks: {}, quizCompleted: false
