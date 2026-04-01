@@ -469,12 +469,38 @@
   /* ===== ACCEPT RISK ===== */
   .accept-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; background: #fffbeb; color: #d97706; }
 
+  /* ===== DISABLED PRIMARY BUTTON ===== */
+  .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-primary:disabled:hover { background: var(--accent); transform: none; box-shadow: none; }
+
+  /* ===== DELETE ROW BUTTON ===== */
+  .row-delete {
+    float: right;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 4px;
+    line-height: 1;
+    transition: color var(--transition);
+  }
+  .row-delete:hover { color: var(--danger); }
+
+  /* ===== COMBINED EFG SLIDERS ===== */
+  .efg-sliders { display: flex; gap: 16px; margin-top: 8px; }
+  .efg-col { flex: 1; }
+  @media (max-width: 640px) { .efg-sliders { flex-direction: column; } }
+
+  /* ===== QUIZ PREVIEW ===== */
+  .quiz-preview { font-size: 13px; color: var(--text-muted); margin-top: 4px; margin-bottom: 8px; }
+
   /* ===== PRINT ===== */
   @media print {
     .progress-header, .nav-footer, .add-row-btn, .toolbar-row, .suggestion-chips, .quiz-section { display: none !important; }
     .step-panel { display: none !important; }
     .step-panel:last-child { display: block !important; }
-    #panel-9 { display: block !important; }
+    #panel-7 { display: block !important; }
     .main-content { padding: 0; max-width: 100%; }
     body { background: white; }
     .card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
@@ -531,8 +557,6 @@
   <div class="step-panel" id="panel-5"></div>
   <div class="step-panel" id="panel-6"></div>
   <div class="step-panel" id="panel-7"></div>
-  <div class="step-panel" id="panel-8"></div>
-  <div class="step-panel" id="panel-9"></div>
 </div>
 
 <script>
@@ -556,9 +580,7 @@ const I18N = {
       ['B', 'Threat Actors', 'Who might target you'],
       ['C', 'Risk Rating', 'Rate potential damage'],
       ['D', 'Vulnerability', 'Rate your exposure'],
-      ['E', 'Fix', 'How easy to harden'],
-      ['F', 'Replace', 'How easy to swap'],
-      ['G', 'Remove', 'How easy to eliminate'],
+      ['E', 'Fix / Replace / Remove', 'Rate ease of action'],
       ['\u2713', 'Results', 'Prioritized action plan']
     ],
 
@@ -724,6 +746,10 @@ const I18N = {
     quizSkip: 'Skip Quiz',
     quizContinue: 'Continue with Selections',
 
+    // Combined Step EFG
+    stepEFG_title: 'Rate Ease of Action',
+    stepEFG_desc: 'For each asset, rate how easy it would be to fix, replace, or remove it. 1 = very hard, 10 = very easy.',
+
     // Report
     generateReport: 'Generate Report'
   },
@@ -742,9 +768,7 @@ const I18N = {
       ['B', 'Actores de Amenaza', 'Qui\u00e9n podr\u00eda atacarte'],
       ['C', 'Nivel de Riesgo', 'Eval\u00faa el da\u00f1o potencial'],
       ['D', 'Vulnerabilidad', 'Eval\u00faa tu exposici\u00f3n'],
-      ['E', 'Reparar', 'Qu\u00e9 tan f\u00e1cil de fortalecer'],
-      ['F', 'Reemplazar', 'Qu\u00e9 tan f\u00e1cil de cambiar'],
-      ['G', 'Eliminar', 'Qu\u00e9 tan f\u00e1cil de quitar'],
+      ['E', 'Reparar / Reemplazar / Eliminar', 'Facilidad de acci\u00f3n'],
       ['\u2713', 'Resultados', 'Plan de acci\u00f3n priorizado']
     ],
 
@@ -858,9 +882,7 @@ const I18N = {
       ['ب', 'الجهات المهددة', 'من قد يستهدفك'],
       ['ج', 'تقييم المخاطر', 'قيّم الضرر المحتمل'],
       ['د', 'الثغرات', 'قيّم مدى تعرضك'],
-      ['هـ', 'الإصلاح', 'سهولة التقوية'],
-      ['و', 'الاستبدال', 'سهولة التبديل'],
-      ['ز', 'الإزالة', 'سهولة الحذف'],
+      ['هـ', 'الإصلاح / الاستبدال / الإزالة', 'سهولة الإجراء'],
       ['\u2713', 'النتائج', 'خطة عمل مرتبة']
     ],
     stepA_badge: 'الخطوة أ',
@@ -964,9 +986,7 @@ const I18N = {
       ['খ', 'হুমকি প্রদানকারী', 'কে আপনাকে লক্ষ্য করতে পারে'],
       ['গ', 'ঝুঁকি রেটিং', 'সম্ভাব্য ক্ষতি মূল্যায়ন করুন'],
       ['ঘ', 'দুর্বলতা', 'আপনার এক্সপোজার মূল্যায়ন করুন'],
-      ['ঙ', 'মেরামত', 'শক্তিশালী করা কতটা সহজ'],
-      ['চ', 'প্রতিস্থাপন', 'বদলানো কতটা সহজ'],
-      ['ছ', 'অপসারণ', 'সরানো কতটা সহজ'],
+      ['ঙ', 'মেরামত / প্রতিস্থাপন / অপসারণ', 'কাজের সহজতা'],
       ['\u2713', 'ফলাফল', 'অগ্রাধিকার ভিত্তিক কর্ম পরিকল্পনা']
     ],
     stepA_badge: 'ধাপ ক',
@@ -1070,9 +1090,7 @@ const I18N = {
       ['B', 'ခြိမ်းခြောက်သူများ', 'မည်သူက ပစ်မှတ်ထားနိုင်သနည်း'],
       ['C', 'အန္တရာယ် အဆင့်သတ်မှတ်ခြင်း', 'ဖြစ်နိုင်ချေရှိသော ထိခိုက်မှုကို အကဲဖြတ်ပါ'],
       ['D', 'အားနည်းချက်', 'သင့်ထိတွေ့မှုကို အကဲဖြတ်ပါ'],
-      ['E', 'ပြုပြင်ခြင်း', 'ခိုင်မာအောင်လုပ်ရန် မည်မျှလွယ်သနည်း'],
-      ['F', 'အစားထိုးခြင်း', 'ပြောင်းလဲရန် မည်မျှလွယ်သနည်း'],
-      ['G', 'ဖယ်ရှားခြင်း', 'ဖျက်ရန် မည်မျှလွယ်သနည်း'],
+      ['E', 'ပြုပြင် / အစားထိုး / ဖယ်ရှား', 'လုပ်ဆောင်ရ လွယ်ကူမှု'],
       ['\u2713', 'ရလဒ်များ', 'ဦးစားပေး လုပ်ဆောင်ချက် အစီအစဉ်']
     ],
     stepA_badge: 'အဆင့် A',
@@ -1176,9 +1194,7 @@ const I18N = {
       ['B', '威胁行为者', '谁可能针对您'],
       ['C', '风险评级', '评估潜在损害'],
       ['D', '脆弱性', '评估您的暴露程度'],
-      ['E', '修复', '加固的难易程度'],
-      ['F', '替换', '更换的难易程度'],
-      ['G', '移除', '消除的难易程度'],
+      ['E', '修复 / 替换 / 移除', '行动难易程度'],
       ['\u2713', '结果', '优先行动计划']
     ],
     stepA_badge: '步骤 A',
@@ -1282,9 +1298,7 @@ const I18N = {
       ['B', '威脅行為者', '誰可能針對您'],
       ['C', '風險評級', '評估潛在損害'],
       ['D', '脆弱性', '評估您的曝露程度'],
-      ['E', '修復', '加固的難易程度'],
-      ['F', '替換', '更換的難易程度'],
-      ['G', '移除', '消除的難易程度'],
+      ['E', '修復 / 替換 / 移除', '行動難易程度'],
       ['\u2713', '結果', '優先行動計畫']
     ],
     stepA_badge: '步驟 A', stepA_title: '識別您的數位資產',
@@ -1350,9 +1364,7 @@ const I18N = {
       ['B', 'खतरा कर्ता', 'कौन आपको निशाना बना सकता है'],
       ['C', 'जोखिम रेटिंग', 'संभावित नुकसान का मूल्यांकन'],
       ['D', 'कमजोरी', 'आपकी भेद्यता का मूल्यांकन'],
-      ['E', 'ठीक करें', 'मजबूत करना कितना आसान'],
-      ['F', 'बदलें', 'प्रतिस्थापित करना कितना आसान'],
-      ['G', 'हटाएं', 'समाप्त करना कितना आसान'],
+      ['E', 'ठीक करें / बदलें / हटाएं', 'कार्रवाई की आसानी'],
       ['\u2713', 'परिणाम', 'प्राथमिकता कार्य योजना']
     ],
     stepA_badge: 'चरण A', stepA_title: 'अपनी डिजिटल संपत्तियों की पहचान करें',
@@ -1419,9 +1431,7 @@ const I18N = {
       ['B', '脅威アクター', '誰があなたを狙うか'],
       ['C', 'リスク評価', '潜在的な被害を評価'],
       ['D', '脆弱性', '露出度を評価'],
-      ['E', '修正', '強化の容易さ'],
-      ['F', '置換', '交換の容易さ'],
-      ['G', '除去', '除去の容易さ'],
+      ['E', '修正 / 置換 / 除去', 'アクションの容易さ'],
       ['\u2713', '結果', '優先アクションプラン']
     ],
     stepA_badge: 'ステップ A', stepA_title: 'デジタル資産を特定する',
@@ -1487,9 +1497,7 @@ const I18N = {
       ['B', '위협 행위자', '누가 당신을 노릴 수 있는지'],
       ['C', '위험 등급', '잠재적 피해 평가'],
       ['D', '취약성', '노출 정도 평가'],
-      ['E', '수정', '강화 용이성'],
-      ['F', '교체', '대체 용이성'],
-      ['G', '제거', '제거 용이성'],
+      ['E', '수정 / 교체 / 제거', '조치 용이성'],
       ['\u2713', '결과', '우선순위 행동 계획']
     ],
     stepA_badge: '단계 A', stepA_title: '디지털 자산 식별',
@@ -1555,9 +1563,7 @@ const I18N = {
       ['B', 'खतरा कर्ता', 'कसले तपाईंलाई लक्षित गर्न सक्छ'],
       ['C', 'जोखिम रेटिङ', 'सम्भावित क्षतिको मूल्याङ्कन'],
       ['D', 'कमजोरी', 'तपाईंको जोखिम मूल्याङ्कन'],
-      ['E', 'मर्मत', 'बलियो बनाउन कत्तिको सजिलो'],
-      ['F', 'प्रतिस्थापन', 'बदल्न कत्तिको सजिलो'],
-      ['G', 'हटाउने', 'हटाउन कत्तिको सजिलो'],
+      ['E', 'मर्मत / प्रतिस्थापन / हटाउने', 'कार्यको सजिलोपन'],
       ['\u2713', 'नतिजा', 'प्राथमिकता कार्य योजना']
     ],
     stepA_badge: 'चरण A', stepA_title: 'तपाईंका डिजिटल सम्पत्तिहरू पहिचान गर्नुहोस्',
@@ -1624,9 +1630,7 @@ const I18N = {
       ['B', 'Mga Banta', 'Sino ang maaaring mag-target sa iyo'],
       ['C', 'Rating ng Panganib', 'Suriin ang potensyal na pinsala'],
       ['D', 'Kahinaan', 'Suriin ang iyong exposure'],
-      ['E', 'Ayusin', 'Gaano kadaling patibayin'],
-      ['F', 'Palitan', 'Gaano kadaling palitan'],
-      ['G', 'Alisin', 'Gaano kadaling tanggalin'],
+      ['E', 'Ayusin / Palitan / Alisin', 'Kadali ng aksyon'],
       ['\u2713', 'Mga Resulta', 'Plano ng aksyon na may priyoridad']
     ],
     stepA_badge: 'Hakbang A', stepA_title: 'Tukuyin ang Iyong mga Digital na Asset',
@@ -1693,9 +1697,7 @@ const I18N = {
       ['B', '\u0e1c\u0e39\u0e49\u0e04\u0e38\u0e01\u0e04\u0e32\u0e21', '\u0e43\u0e04\u0e23\u0e2d\u0e32\u0e08\u0e01\u0e33\u0e2b\u0e19\u0e14\u0e40\u0e1b\u0e49\u0e32\u0e2b\u0e21\u0e32\u0e22\u0e04\u0e38\u0e13'],
       ['C', '\u0e23\u0e30\u0e14\u0e31\u0e1a\u0e04\u0e27\u0e32\u0e21\u0e40\u0e2a\u0e35\u0e48\u0e22\u0e07', '\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19\u0e04\u0e27\u0e32\u0e21\u0e40\u0e2a\u0e35\u0e22\u0e2b\u0e32\u0e22\u0e17\u0e35\u0e48\u0e2d\u0e32\u0e08\u0e40\u0e01\u0e34\u0e14\u0e02\u0e36\u0e49\u0e19'],
       ['D', '\u0e08\u0e38\u0e14\u0e2d\u0e48\u0e2d\u0e19', '\u0e1b\u0e23\u0e30\u0e40\u0e21\u0e34\u0e19\u0e04\u0e27\u0e32\u0e21\u0e40\u0e1b\u0e34\u0e14\u0e40\u0e1c\u0e22\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13'],
-      ['E', '\u0e41\u0e01\u0e49\u0e44\u0e02', '\u0e40\u0e2a\u0e23\u0e34\u0e21\u0e04\u0e27\u0e32\u0e21\u0e41\u0e02\u0e47\u0e07\u0e41\u0e01\u0e23\u0e48\u0e07\u0e07\u0e48\u0e32\u0e22\u0e41\u0e04\u0e48\u0e44\u0e2b\u0e19'],
-      ['F', '\u0e41\u0e17\u0e19\u0e17\u0e35\u0e48', '\u0e40\u0e1b\u0e25\u0e35\u0e48\u0e22\u0e19\u0e07\u0e48\u0e32\u0e22\u0e41\u0e04\u0e48\u0e44\u0e2b\u0e19'],
-      ['G', '\u0e25\u0e1a\u0e2d\u0e2d\u0e01', '\u0e01\u0e33\u0e08\u0e31\u0e14\u0e07\u0e48\u0e32\u0e22\u0e41\u0e04\u0e48\u0e44\u0e2b\u0e19'],
+      ['E', '\u0e41\u0e01\u0e49\u0e44\u0e02 / \u0e41\u0e17\u0e19\u0e17\u0e35\u0e48 / \u0e25\u0e1a\u0e2d\u0e2d\u0e01', '\u0e04\u0e27\u0e32\u0e21\u0e07\u0e48\u0e32\u0e22\u0e43\u0e19\u0e01\u0e32\u0e23\u0e14\u0e33\u0e40\u0e19\u0e34\u0e19\u0e01\u0e32\u0e23'],
       ['\u2713', '\u0e1c\u0e25\u0e25\u0e31\u0e1e\u0e18\u0e4c', '\u0e41\u0e1c\u0e19\u0e1b\u0e0f\u0e34\u0e1a\u0e31\u0e15\u0e34\u0e01\u0e32\u0e23\u0e15\u0e32\u0e21\u0e25\u0e33\u0e14\u0e31\u0e1a\u0e04\u0e27\u0e32\u0e21\u0e2a\u0e33\u0e04\u0e31\u0e0d']
     ],
     stepA_badge: '\u0e02\u0e31\u0e49\u0e19\u0e15\u0e2d\u0e19 A', stepA_title: '\u0e23\u0e30\u0e1a\u0e38\u0e17\u0e23\u0e31\u0e1e\u0e22\u0e4c\u0e2a\u0e34\u0e19\u0e14\u0e34\u0e08\u0e34\u0e17\u0e31\u0e25\u0e02\u0e2d\u0e07\u0e04\u0e38\u0e13',
@@ -1762,9 +1764,7 @@ const I18N = {
       ['B', '\u062e\u0637\u0631\u06d2 \u06a9\u06d2 \u06a9\u0631\u062f\u0627\u0631', '\u06a9\u0648\u0646 \u0622\u067e \u06a9\u0648 \u0646\u0634\u0627\u0646\u06c1 \u0628\u0646\u0627 \u0633\u06a9\u062a\u0627 \u06c1\u06d2'],
       ['C', '\u062e\u0637\u0631\u06d2 \u06a9\u06cc \u062f\u0631\u062c\u06c1 \u0628\u0646\u062f\u06cc', '\u0645\u0645\u06a9\u0646\u06c1 \u0646\u0642\u0635\u0627\u0646 \u06a9\u0627 \u062c\u0627\u0626\u0632\u06c1'],
       ['D', '\u06a9\u0645\u0632\u0648\u0631\u06cc', '\u0622\u067e \u06a9\u06cc \u0646\u0645\u0627\u0626\u0634 \u06a9\u0627 \u062c\u0627\u0626\u0632\u06c1'],
-      ['E', '\u0645\u0631\u0645\u062a', '\u0645\u0636\u0628\u0648\u0637 \u0628\u0646\u0627\u0646\u0627 \u06a9\u062a\u0646\u0627 \u0622\u0633\u0627\u0646'],
-      ['F', '\u062a\u0628\u062f\u06cc\u0644\u06cc', '\u0628\u062f\u0644\u0646\u0627 \u06a9\u062a\u0646\u0627 \u0622\u0633\u0627\u0646'],
-      ['G', '\u06c1\u0679\u0627\u0646\u0627', '\u06c1\u0679\u0627\u0646\u0627 \u06a9\u062a\u0646\u0627 \u0622\u0633\u0627\u0646'],
+      ['E', '\u0645\u0631\u0645\u062a / \u062a\u0628\u062f\u06cc\u0644\u06cc / \u06c1\u0679\u0627\u0646\u0627', '\u0639\u0645\u0644 \u06a9\u06cc \u0622\u0633\u0627\u0646\u06cc'],
       ['\u2713', '\u0646\u062a\u0627\u0626\u062c', '\u062a\u0631\u062c\u06cc\u062d\u06cc \u0639\u0645\u0644 \u0645\u0646\u0635\u0648\u0628\u06c1']
     ],
     stepA_badge: '\u0645\u0631\u062d\u0644\u06c1 A', stepA_title: '\u0627\u067e\u0646\u06d2 \u0688\u06cc\u062c\u06cc\u0679\u0644 \u0627\u062b\u0627\u062b\u0648\u06ba \u06a9\u06cc \u0634\u0646\u0627\u062e\u062a \u06a9\u0631\u06cc\u06ba',
@@ -1831,9 +1831,7 @@ const I18N = {
       ['B', 'T\u00e1c nh\u00e2n \u0111e d\u1ecda', 'Ai c\u00f3 th\u1ec3 nh\u1eafm v\u00e0o b\u1ea1n'],
       ['C', '\u0110\u00e1nh gi\u00e1 r\u1ee7i ro', '\u0110\u00e1nh gi\u00e1 thi\u1ec7t h\u1ea1i ti\u1ec1m t\u00e0ng'],
       ['D', 'L\u1ed7 h\u1ed5ng', '\u0110\u00e1nh gi\u00e1 m\u1ee9c \u0111\u1ed9 ph\u01a1i b\u00e0y'],
-      ['E', 'S\u1eeda ch\u1eefa', 'Gia c\u1ed1 d\u1ec5 \u0111\u1ebfn m\u1ee9c n\u00e0o'],
-      ['F', 'Thay th\u1ebf', '\u0110\u1ed5i d\u1ec5 \u0111\u1ebfn m\u1ee9c n\u00e0o'],
-      ['G', 'Lo\u1ea1i b\u1ecf', 'X\u00f3a b\u1ecf d\u1ec5 \u0111\u1ebfn m\u1ee9c n\u00e0o'],
+      ['E', 'S\u1eeda / Thay / Lo\u1ea1i b\u1ecf', '\u0110\u1ed9 d\u1ec5 c\u1ee7a h\u00e0nh \u0111\u1ed9ng'],
       ['\u2713', 'K\u1ebft qu\u1ea3', 'K\u1ebf ho\u1ea1ch h\u00e0nh \u0111\u1ed9ng \u01b0u ti\u00ean']
     ],
     stepA_badge: 'B\u01b0\u1edbc A', stepA_title: 'X\u00e1c \u0111\u1ecbnh t\u00e0i s\u1ea3n k\u1ef9 thu\u1eadt s\u1ed1',
@@ -1967,13 +1965,25 @@ const RECOMMENDATIONS = {
   }
 };
 
+const REC_ALIASES = {
+  laptop: 'device', desktop: 'device', computer: 'device', phone: 'device',
+  twitter: 'social', instagram: 'social', facebook: 'social', linkedin: 'social',
+  gmail: 'email', outlook: 'email', protonmail: 'email',
+  whatsapp: 'messag', signal: 'messag', telegram: 'messag',
+  drive: 'cloud', dropbox: 'cloud', icloud: 'cloud',
+  bank: 'financ', paypal: 'financ', venmo: 'financ',
+  bitcoin: 'crypto', ethereum: 'crypto', wallet: 'crypto',
+  photo: 'photo', document: 'photo', passport: 'photo'
+};
+
 function getRecommendations(assetName, strategy) {
   if (!assetName || !strategy) return [];
   const lower = assetName.toLowerCase();
   for (const key of Object.keys(RECOMMENDATIONS)) {
-    if (lower.includes(key)) {
-      return RECOMMENDATIONS[key][strategy] || [];
-    }
+    if (lower.includes(key)) return RECOMMENDATIONS[key][strategy] || [];
+  }
+  for (const [alias, recKey] of Object.entries(REC_ALIASES)) {
+    if (lower.includes(alias)) return RECOMMENDATIONS[recKey][strategy] || [];
   }
   return [];
 }
@@ -1996,7 +2006,7 @@ document.getElementById('langSelect').addEventListener('change', e => {
 
 // ========== STATE ==========
 const STORAGE_KEY = 'threat_risk_tool_data';
-const TOTAL_STEPS = 10;
+const TOTAL_STEPS = 8;
 
 let currentStep = 0;
 let state = loadState();
@@ -2068,7 +2078,7 @@ function priorityBadge(score) {
 // ========== SLIDER HELPERS ==========
 function sliderHtml(value, dataAttr) {
   const hasVal = value !== '' && value !== undefined && value !== null;
-  const num = hasVal ? +value : 5;
+  const num = hasVal ? +value : 1;
   const cls = hasVal ? '' : ' unset';
   const valCls = hasVal ? '' : ' empty';
   const display = hasVal ? num : '&mdash;';
@@ -2115,10 +2125,8 @@ function renderPanel(n) {
     case 3: renderStepC(el); break;
     case 4: renderStepD(el); break;
     case 5: renderThreatResults(el); break;
-    case 6: renderStepE(el); break;
-    case 7: renderStepF(el); break;
-    case 8: renderStepG(el); break;
-    case 9: renderMitigationResults(el); break;
+    case 6: renderStepEFG(el); break;
+    case 7: renderMitigationResults(el); break;
   }
 }
 
@@ -2193,10 +2201,13 @@ function showQuiz() {
       <span class="qchip" data-val="student" onclick="selectQuizProfile(this)">${t('quizStudent')}</span>
     </div>
   </div>
+  <div class="quiz-preview" id="quiz-preview"></div>
   <div class="nav-footer">
     <button class="btn btn-ghost" onclick="renderPanel(0)">${t('quizSkip')}</button>
-    <button class="btn btn-primary" onclick="applyQuiz()">${t('quizContinue')}</button>
+    <button class="btn btn-primary" id="quiz-continue-btn" onclick="applyQuiz()" disabled>${t('quizContinue')}</button>
   </div>`;
+  updateQuizButton();
+  updateQuizPreview();
 }
 
 function toggleQuizChip(el, group) {
@@ -2205,12 +2216,45 @@ function toggleQuizChip(el, group) {
   const arr = quizSelections[group];
   const idx = arr.indexOf(val);
   if (idx >= 0) arr.splice(idx, 1); else arr.push(val);
+  updateQuizButton();
+  updateQuizPreview();
 }
 
 function selectQuizProfile(el) {
   document.querySelectorAll('#quiz-profile .qchip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
   quizSelections.profile = el.dataset.val;
+  updateQuizButton();
+  updateQuizPreview();
+}
+
+function updateQuizButton() {
+  const btn = document.getElementById('quiz-continue-btn');
+  if (!btn) return;
+  const hasSelection = quizSelections.devices.length > 0 || quizSelections.concerns.length > 0 || quizSelections.profile !== '';
+  btn.disabled = !hasSelection;
+}
+
+function updateQuizPreview() {
+  const el = document.getElementById('quiz-preview');
+  if (!el) return;
+  const assets = new Set();
+  const threats = new Set();
+  assets.add('Email Accounts'); assets.add('Social Media');
+  if (quizSelections.devices.includes('smartphone')) { assets.add('Smartphone'); assets.add('Messaging Apps'); }
+  if (quizSelections.devices.includes('laptop')) assets.add('Laptop/Desktop');
+  if (quizSelections.devices.includes('tablet')) assets.add('Tablet');
+  if (quizSelections.devices.includes('smarthome')) assets.add('Smart Home Devices');
+  if (quizSelections.concerns.includes('identity')) threats.add('Identity Thieves');
+  if (quizSelections.concerns.includes('surveillance')) threats.add('Government Surveillance');
+  if (quizSelections.concerns.includes('hacking')) threats.add('Cybercriminals');
+  if (quizSelections.concerns.includes('dataleaks')) threats.add('Data Brokers');
+  if (quizSelections.concerns.includes('physicaltheft')) threats.add('Physical Thieves');
+  if (quizSelections.profile === 'journalist') { assets.add('Cloud Storage'); threats.add('Government Surveillance'); }
+  if (quizSelections.profile === 'activist') { assets.add('Messaging Apps'); threats.add('Government Surveillance'); }
+  if (quizSelections.profile === 'business') { assets.add('Financial Accounts'); assets.add('Cloud Storage'); }
+  const hasSelection = quizSelections.devices.length > 0 || quizSelections.concerns.length > 0 || quizSelections.profile !== '';
+  el.textContent = hasSelection ? `This will create ${assets.size} assets and ${threats.size} threat actors` : '';
 }
 
 function applyQuiz() {
@@ -2321,6 +2365,7 @@ function renderStepA(el) {
   const items = document.getElementById('items-a');
   items.innerHTML = state.assets.map((a, i) => `
     <div class="item-row">
+      <button class="row-delete" onclick="deleteAssetRow(${i})" ${state.assets.length <= 1 ? 'disabled style="visibility:hidden"' : ''}>&times;</button>
       <div class="item-num">${t('asset')} ${i + 1}</div>
       <div class="field-group">
         <div class="field-label">${t('name')}</div>
@@ -2354,6 +2399,7 @@ function renderStepB(el) {
   const items = document.getElementById('items-b');
   items.innerHTML = state.threats.map((th, i) => `
     <div class="item-row">
+      <button class="row-delete" onclick="deleteThreatRow(${i})" ${state.threats.length <= 1 ? 'disabled style="visibility:hidden"' : ''}>&times;</button>
       <div class="item-num">${t('threatActor')} ${i + 1}</div>
       <div class="field-group">
         <div class="field-label">${t('name')}</div>
@@ -2515,85 +2561,18 @@ function renderThreatResults(el) {
   bindSliders(items, e => { state.threatNotes[e.target.dataset.i] = e.target.value; saveState(); });
 }
 
-// ========== RENDER: STEP E ==========
-function renderStepE(el) {
+// ========== RENDER: COMBINED STEP E/F/G ==========
+function renderStepEFG(el) {
   el.innerHTML = `
     <div class="step-header">
       <div class="step-badge">${t('stepE_badge')}</div>
-      <h1>${t('stepE_title')}</h1>
-      <p>${t('stepE_desc')}</p>
+      <h1>${t('stepEFG_title') || t('stepE_title')}</h1>
+      <p>${t('stepEFG_desc') || t('stepE_desc')}</p>
     </div>
-    <div class="card"><div id="items-e"></div></div>
-    ${navFooter(5, 7, t('nextEaseReplace'))}`;
+    <div class="card"><div id="items-efg"></div></div>
+    ${navFooter(5, 7, t('viewFinalResults'))}`;
 
-  const items = document.getElementById('items-e');
-  const filled = getFilledAssets();
-  if (!filled.length) { items.innerHTML = `<div class="empty-state">${t('noAssetsToEval')}</div>`; return; }
-
-  items.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    return `<div class="rating-card">
-      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
-      <div class="field-group">
-        <div class="field-label">${t('easeOfFixing')}</div>
-        ${sliderHtml(fix, `data-i="${a.idx}"`)}
-      </div>
-    </div>`;
-  }).join('');
-
-  bindSliders(items, e => { state.fixScores[e.target.dataset.i] = e.target.value; saveState(); });
-}
-
-// ========== RENDER: STEP F ==========
-function renderStepF(el) {
-  el.innerHTML = `
-    <div class="step-header">
-      <div class="step-badge">${t('stepF_badge')}</div>
-      <h1>${t('stepF_title')}</h1>
-      <p>${t('stepF_desc')}</p>
-    </div>
-    <div class="card"><div id="items-f"></div></div>
-    ${navFooter(6, 8, t('nextEaseRemove'))}`;
-
-  const items = document.getElementById('items-f');
-  const filled = getFilledAssets();
-  if (!filled.length) { items.innerHTML = `<div class="empty-state">${t('noAssetsToEval')}</div>`; return; }
-
-  items.innerHTML = filled.map(a => {
-    const p = calcPriority(a.idx);
-    const fix = state.fixScores[a.idx] || '';
-    const rep = state.replaceScores[a.idx] || '';
-    return `<div class="rating-card">
-      <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
-      <div class="rating-fields">
-        <div class="field-group">
-          <div class="field-label">${t('fixScore')}</div>
-          <div class="auto-val${fix?'':' empty'}">${fix||'&mdash;'}</div>
-        </div>
-        <div class="field-group" style="flex:2">
-          <div class="field-label">${t('easeOfReplacing')}</div>
-          ${sliderHtml(rep, `data-i="${a.idx}"`)}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  bindSliders(items, e => { state.replaceScores[e.target.dataset.i] = e.target.value; saveState(); });
-}
-
-// ========== RENDER: STEP G ==========
-function renderStepG(el) {
-  el.innerHTML = `
-    <div class="step-header">
-      <div class="step-badge">${t('stepG_badge')}</div>
-      <h1>${t('stepG_title')}</h1>
-      <p>${t('stepG_desc')}</p>
-    </div>
-    <div class="card"><div id="items-g"></div></div>
-    ${navFooter(7, 9, t('viewFinalResults'))}`;
-
-  const items = document.getElementById('items-g');
+  const items = document.getElementById('items-efg');
   const filled = getFilledAssets();
   if (!filled.length) { items.innerHTML = `<div class="empty-state">${t('noAssetsToEval')}</div>`; return; }
 
@@ -2604,24 +2583,31 @@ function renderStepG(el) {
     const rem = state.removeScores[a.idx] || '';
     return `<div class="rating-card">
       <div class="rating-name">${esc(a.name)} ${priorityBadge(p)}</div>
-      <div class="rating-fields">
-        <div class="field-group">
-          <div class="field-label">${t('fix')}</div>
-          <div class="auto-val${fix?'':' empty'}">${fix||'&mdash;'}</div>
+      <div class="efg-sliders">
+        <div class="efg-col">
+          <div class="field-label">${t('easeOfFixing')}</div>
+          ${sliderHtml(fix, `data-i="${a.idx}" data-type="fix"`)}
         </div>
-        <div class="field-group">
-          <div class="field-label">${t('replace')}</div>
-          <div class="auto-val${rep?'':' empty'}">${rep||'&mdash;'}</div>
+        <div class="efg-col">
+          <div class="field-label">${t('easeOfReplacing')}</div>
+          ${sliderHtml(rep, `data-i="${a.idx}" data-type="replace"`)}
         </div>
-        <div class="field-group" style="flex:2">
+        <div class="efg-col">
           <div class="field-label">${t('easeOfRemoving')}</div>
-          ${sliderHtml(rem, `data-i="${a.idx}"`)}
+          ${sliderHtml(rem, `data-i="${a.idx}" data-type="remove"`)}
         </div>
       </div>
     </div>`;
   }).join('');
 
-  bindSliders(items, e => { state.removeScores[e.target.dataset.i] = e.target.value; saveState(); });
+  bindSliders(items, e => {
+    const type = e.target.dataset.type;
+    const idx = e.target.dataset.i;
+    if (type === 'fix') state.fixScores[idx] = e.target.value;
+    else if (type === 'replace') state.replaceScores[idx] = e.target.value;
+    else if (type === 'remove') state.removeScores[idx] = e.target.value;
+    saveState();
+  });
 }
 
 // ========== RENDER: MITIGATION RESULTS ==========
@@ -2665,7 +2651,7 @@ function renderMitigationResults(el) {
       <div class="stat-card"><div class="stat-num" style="color:#16a34a">${fixBest}</div><div class="stat-label">${t('bestToFix')}</div></div>
       <div class="stat-card"><div class="stat-num" style="color:#7c3aed">${repBest}</div><div class="stat-label">${t('bestToReplace')}</div></div>
       <div class="stat-card"><div class="stat-num" style="color:#d97706">${remBest}</div><div class="stat-label">${t('bestToRemove')}</div></div>
-      <div class="stat-card"><div class="stat-num" style="color:#f59e0b">${acceptCount}</div><div class="stat-label">${t('bestToAccept')}</div></div>
+      ${acceptCount > 0 ? `<div class="stat-card"><div class="stat-num" style="color:#f59e0b">${acceptCount}</div><div class="stat-label">${t('bestToAccept')}</div></div>` : ''}
     </div>`;
   }
 
@@ -2685,7 +2671,7 @@ function renderMitigationResults(el) {
       <button class="btn btn-danger" onclick="clearAll()">${t('resetAllData')}</button>
     </div>
     <div class="nav-footer">
-      <button class="btn btn-ghost" onclick="goToStep(8)">${t('back')}</button>
+      <button class="btn btn-ghost" onclick="goToStep(6)">${t('back')}</button>
       <button class="btn btn-primary" onclick="goToStep(0)">${t('startOver')}</button>
     </div>`;
 
@@ -2759,7 +2745,7 @@ function toggleAcceptRisk(idx) {
     state.acceptedRisks[idx] = { justification: '' };
   }
   saveState();
-  renderPanel(9);
+  renderPanel(7);
 }
 
 // ========== ADD ROWS ==========
@@ -2779,6 +2765,38 @@ function addThreatRow() {
   const rows = document.querySelectorAll('#items-b .item-row');
   const last = rows[rows.length - 1];
   if (last) { last.scrollIntoView({behavior:'smooth', block:'center'}); last.querySelector('input[data-field="name"]')?.focus(); }
+}
+
+// ========== DELETE ROWS ==========
+function deleteAssetRow(idx) {
+  if (state.assets.length <= 1) return;
+  state.assets.splice(idx, 1);
+  const rekey = (obj) => {
+    const newObj = {};
+    Object.keys(obj).forEach(k => {
+      const ki = +k;
+      if (ki < idx) newObj[ki] = obj[ki];
+      else if (ki > idx) newObj[ki - 1] = obj[ki];
+    });
+    return newObj;
+  };
+  state.riskRatings = rekey(state.riskRatings);
+  state.vulnRatings = rekey(state.vulnRatings);
+  state.threatNotes = rekey(state.threatNotes);
+  state.fixScores = rekey(state.fixScores);
+  state.replaceScores = rekey(state.replaceScores);
+  state.removeScores = rekey(state.removeScores);
+  state.mitigationNotes = rekey(state.mitigationNotes);
+  state.acceptedRisks = rekey(state.acceptedRisks);
+  saveState();
+  renderPanel(1);
+}
+
+function deleteThreatRow(idx) {
+  if (state.threats.length <= 1) return;
+  state.threats.splice(idx, 1);
+  saveState();
+  renderPanel(2);
 }
 
 // ========== EXPORT ==========
@@ -2806,7 +2824,7 @@ function exportCSV() {
 }
 
 function printResults() {
-  goToStep(9);
+  goToStep(7);
   setTimeout(() => window.print(), 300);
 }
 
@@ -2814,8 +2832,8 @@ function generateReport() {
   // Show all relevant panels for comprehensive print
   const panels = document.querySelectorAll('.step-panel');
   panels.forEach(p => p.style.display = 'none');
-  // Render panels 1 (assets), 2 (threats), 5 (threat results), 9 (mitigation)
-  [1, 2, 5, 9].forEach(n => {
+  // Render panels 1 (assets), 2 (threats), 5 (threat results), 7 (mitigation)
+  [1, 2, 5, 7].forEach(n => {
     const p = document.getElementById(`panel-${n}`);
     renderPanel(n);
     p.style.display = 'block';
@@ -2824,7 +2842,7 @@ function generateReport() {
     window.print();
     // Restore normal view
     panels.forEach(p => p.style.display = '');
-    goToStep(9);
+    goToStep(7);
   }, 300);
 }
 
